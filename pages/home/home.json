@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "i-icon": "../../iview-components/icon/index",
+    "i-swipeout": "../../iview-components/swipeout/index",
+    "i-collapse": "./components/collapse/index",
+    "i-collapse-item": "./components/collapse-item/index"
+  }
+}

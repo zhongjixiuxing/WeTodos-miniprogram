@@ -1,0 +1,108 @@
+<view class="container" style="{{list.theme.type === 'color' ? 'background-color: ' + list.theme.value : 'background-image: url('+list.theme.value + ')'}}">
+    <view class="header">
+        <view class="wrap">
+            <view class="left" bindtap="goback">
+                <i-icon type="return" size="22" color="white"/>
+                <text>清单</text>
+            </view>
+            <view class="name">
+                <text>{{list.name}}</text>
+            </view>
+            <view class="right">
+                <i-icon type="more" size="24" fontWeight="bold" color="white" bindtap="revertActions"/>
+            </view>
+        </view>
+    </view>
+
+    <view class="content">
+        <view class="tasks">
+            <view class="task" wx:for="{{list.tasks}}" wx:for-item="task" wx:key="id">
+                <view class="checkbox" bindtap="revertState" data-task="{{task}}">
+                    <i-icon wx:if="{{task.state === 'finished'}}" type="success_fill" size="32" color="green" bindtap="revertState" data-task="{{task}}"/>
+                </view>
+                <view class="main">
+                    <text class="name">{{task.name}}</text>
+                    <block>
+                        <view class="subline">
+                            明天
+                        </view>
+                    </block>
+                </view>
+                <view class="important">
+                    <i-icon wx:if="{{task.important === false}}" type="collection" size="22" color="grey" bindtap="revertImportant" data-task="{{task}}"/>
+                    <i-icon wx:else type="collection_fill" size="22" color="grey" bindtap="revertImportant" data-task="{{task}}" />
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="footer" wx:if="{{isCreateTask === false && isUpdateListName === false && isUpdateTheme === false}}">
+        <view class="wrap" bindtap="revertCreateTaskInput">
+            <i-icon type="add" size="26" color="white"/>
+            <text>添加任务</text>
+        </view>
+    </view>
+    <view class="inputs" wx:else>
+        <view class="create-task" wx:if="{{isCreateTask}}">
+            <view class="checkbox"></view>
+            <input type="text" placeholder="添加任务" focus="{{isCreateTask}}" bindconfirm="createTask" bindblur="createTaskByBlurEvent" />
+        </view>
+        <view class="updateTaskName" wx:elif="{{isUpdateListName}}">
+            <view class="title">
+                <text>重命名清单</text>
+            </view>
+            <view class="content">
+                <input type="text" placeholder="清单名称" focus="{{isUpdateListName}}" value="{{list.name}}" bindconfirm="updateListName" bindblur="updateListName"/>
+            </view>
+        </view>
+
+        <view class="updateTheme" wx:elif="{{isUpdateTheme}}">
+            <view class="header">
+                <i-icon type="return" size="24" color="royalblue" bindtap="openActions"/>
+                <text>选择主题</text>
+                <text class="close" bindtap="closeUpdateThemeInput">完成</text>
+            </view>
+            <view class="content">
+                <view class="top">
+                    <text class="color {{themes.selected.type === 'color' ? 'active':''}}" bindtap="changeSelectThemeType" data-type="color">颜色</text>
+                    <text class="picture {{themes.selected.type === 'picture' ? 'active':''}}" bindtap="changeSelectThemeType" data-type="picture">照片</text>
+                </view>
+                <view class="bottom">
+                    <block wx:if="{{themes.selected.type === 'color'}}">
+                        <view class="colors">
+                            <view class="item" wx:for="{{themes.colors}}"
+                                  wx:for-item="c"
+                                  wx:for-index="idx"
+                                  wx:key="value"
+                                  bindtap="updateTheme" data-idx="{{idx}}"
+                                  style="{{'background-color:' + c.value}}">
+                                <view class="point" wx:if="{{idx === themes.selected.index}}"></view>
+                            </view>
+                        </view>
+                    </block>
+                    <block wx:else>
+                        <view class="picture-list">
+                            <view class="item"
+                                  wx:for="{{themes.pictures}}"
+                                  wx:for-item="p"
+                                  wx:for-index="idx"
+                                  wx:key="value"
+                                  bindtap="updateTheme" data-idx="{{idx}}">
+                                <image class="img" src="{{p.value}}" mode="cover"></image>
+                                <view class="point" wx:if="{{idx === themes.selected.index}}"></view>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <i-action-sheet visible="{{ actionsVisible }}" actions="{{ actions }}" show-cancel bind:cancel="handleCancel1" bind:click="actionClick">
+        <view slot="header" class="header">
+            <text>清单选项</text>
+            <view class="action" bindtap="revertActions">完成</view>
+        </view>
+    </i-action-sheet>
+
+
+</view>

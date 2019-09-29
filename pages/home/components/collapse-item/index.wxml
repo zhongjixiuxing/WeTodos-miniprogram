@@ -1,0 +1,21 @@
+<view id="{{name}}" class="i-class i-collapse-item ">
+    <view class="i-collapse-item-title-wrap" bindtap="trigger">
+<!--        <i-icon size="{{titleIconSize}}" type="{{titleIcon}}"/>-->
+        <view class="wrap-wrap">
+            <view class="left">
+                <i-icon type="createtask" size="24" fontWeight="500" color="#80848f"/>
+                <text class="i-collapse-item-title i-class-title">{{title}}</text>
+            </view>
+
+            <view class="icons">
+                <block wx:if="{{showContent !== ''}}"><i-icon size="20" type="more" color="#80848f" fontWeight="bold"/> </block>
+                <text space="ensp">\t  </text>
+                <i-icon size="16" type="enter" color="#80848f" i-class="{{ showContent ? 'i-collapse-item-arrow-show' : 'i-collapse-item-arrow' }}"/>
+            </view>
+        </view>
+
+    </view>
+    <view class="i-collapse-item-content {{showContent}}  i-class-content">
+        <slot name="content"></slot>
+    </view>
+</view>

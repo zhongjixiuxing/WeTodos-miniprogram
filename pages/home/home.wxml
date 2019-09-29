@@ -1,0 +1,123 @@
+<view class="container">
+    <view class="header">
+        <view class="header-wrap">
+            <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+            <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+            <i-icon type="search" size="20" color="#38f" fontWeight="bold"/>
+        </view>
+    </view>
+    <view class="content">
+        <view class="top">
+            <view class="list">
+                <view class="item">
+                    <view class="wrap">
+                        <i-icon type="integral" size="24" fontWeight="500" color="#80848f"/>
+                        <text class="title">我的一天</text>
+                        <text class="number">1</text>
+                    </view>
+                </view>
+                <view class="item">
+                    <view class="wrap">
+                        <i-icon type="collection" size="24" fontWeight="bold" color="#ed3f14"/>
+                        <text class="title">重要</text>
+                        <text class="number">1</text>
+                    </view>
+                </view>
+                <view class="item">
+                    <view class="wrap">
+                        <i-icon type="activity" size="24" fontWeight="500" color="#80848f"/>
+                        <text class="title">已计划日程</text>
+                        <text class="number">1</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="divLine"></view>
+        <view class="bottom">
+            <view class="list">
+                <i-collapse name="{{name}}">
+                    <i-collapse-item title="史蒂夫·乔布斯" name="name1">
+                        <view slot="content">
+                            <view class="group-content">
+                                <i-swipeout actions="{{swipeActions}}">
+                                    <view slot="content" class="group-item">
+                                        <view class="v-line"></view>
+                                        <i-icon type="other" size="24" fontWeight="500" color="#80848f"/>
+                                        <text class="title">我的一天</text>
+                                        <i-icon type="enter" size="16" fontWeight="500" color="#80848f"/>
+                                    </view>
+                                </i-swipeout>
+                            </view>
+                        </view>
+                    </i-collapse-item>
+                </i-collapse>
+
+                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
+                    <view slot="content" class="item">
+                        <view class="item-wrap">
+                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
+                            <text class="title">重要</text>
+                            <text class="number">121</text>
+                        </view>
+                    </view>
+                </i-swipeout>
+                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
+                    <view slot="content" class="item">
+                        <view class="item-wrap">
+                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
+                            <text class="title">重要</text>
+                            <text class="number">121</text>
+                        </view>
+                    </view>
+                </i-swipeout>
+                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
+                    <view slot="content" class="item">
+                        <view class="item-wrap">
+                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
+                            <text class="title">重要</text>
+                            <text class="number">121</text>
+                        </view>
+                    </view>
+                </i-swipeout>
+                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
+                    <view slot="content" class="item">
+                        <view class="item-wrap">
+                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
+                            <text class="title">重要</text>
+                            <text class="number">121</text>
+                        </view>
+                    </view>
+                </i-swipeout>
+                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
+                    <view slot="content" class="item">
+                        <view class="item-wrap">
+                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
+                            <text class="title">重要</text>
+                            <text class="number">121</text>
+                        </view>
+                    </view>
+                </i-swipeout>
+                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
+                    <view slot="content" class="item" bindtap='goListPage' data-list="list">
+                        <view class="item-wrap">
+                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
+                            <text class="title">重要</text>
+                            <text class="number">121</text>
+                        </view>
+                    </view>
+                </i-swipeout>
+            </view>
+        </view>
+    </view>
+
+    <view class="footer">
+        <view class="wrap">
+            <i-icon type="add" size="24" />
+            <text class="title">新建清单</text>
+            <view class="create-group">
+                <i-icon type="createtask" size="22"/>
+                <i-icon type="add" class="plus" />
+            </view>
+        </view>
+    </view>
+</view>

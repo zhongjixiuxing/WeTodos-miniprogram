@@ -1,0 +1,55 @@
+const user = {
+    id: 'uuid',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
+    password: 'string',
+    createdAt: 'date',
+    wxOpenId: 'string',
+    wxUnionId: 'string',
+    token: 'string',
+    tokenExpireIn: 'number, seconds',
+    refreshToken: 'string',
+    refreshTokenExpireIn: 'number, seconds'
+};
+
+const task = {
+    id: 'uuid',
+    uid: 'uuid', // uid
+    lid: 'uuid', // group id
+    type: '',
+    important: 'bool, default false',
+    steps: ["string"],
+    expireDay: 'date, expire at day',
+    comment: 'string',
+    createdAt: 'date',
+    updatedAt: 'date',
+    repeat: '',
+};
+
+// 清单
+const list = {
+    id: 'uuid',
+    uid: 'uuid', // user id
+    gid: 'uuid', // group id
+    name: 'string',
+    createdAt: 'string',
+    theme: {
+        type: 'enum, color/img',
+    },
+};
+
+const group = {
+    id: 'uuid',
+    uid: 'uuid',
+    name: 'string',
+    updatedAt: 'date',
+    createdAt: 'date'
+};
+
+module.exports = {
+    task,
+    group,
+    list,
+    user
+}
