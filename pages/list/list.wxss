@@ -23,19 +23,22 @@ page {
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        z-index: 1; }
+        z-index: 1;
+        font-size: 16px; }
       .container .header .wrap .name {
         position: absolute;
         width: 100%;
         text-align: center;
-        font-weight: bold; }
+        font-weight: bold;
+        font-size: 16px; }
       .container .header .wrap .right {
         z-index: 1; }
   .container .content {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
-    padding: 3%; }
+    padding: 3%;
+    overflow-y: auto; }
     .container .content .tasks .task {
       display: flex;
       flex-direction: row;
@@ -72,11 +75,39 @@ page {
           text-overflow: ellipsis;
           overflow: hidden;
           -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2; }
+          -webkit-line-clamp: 2;
+          font-size: 16px; }
         .container .content .tasks .task .main .subline {
-          font-size: 20rpx;
+          font-size: 12px;
           color: gray;
-          font-weight: 400; }
+          font-weight: 400;
+          display: flex;
+          justify-items: center; }
+          .container .content .tasks .task .main .subline .listname text {
+            transform: scale(0.8);
+            margin-left: -6px;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1; }
+          .container .content .tasks .task .main .subline .steps {
+            width: 100%;
+            max-width: 60px;
+            display: flex;
+            justify-content: start;
+            align-items: center; }
+            .container .content .tasks .task .main .subline .steps text {
+              transform: scale(0.8);
+              margin-left: -3px; }
+          .container .content .tasks .task .main .subline .expire {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            width: 100%;
+            max-width: 116px; }
+            .container .content .tasks .task .main .subline .expire text {
+              transform: scale(0.8);
+              margin-left: -6px;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 1; }
     .container .content .tasks .task:not(:first-child) {
       margin-top: 2px; }
   .container .footer {
@@ -94,7 +125,8 @@ page {
       align-items: center;
       background-color: rgba(255, 255, 255, 0.1); }
       .container .footer .wrap text {
-        padding-left: 12px; }
+        padding-left: 12px;
+        font-size: 15px; }
   .container .inputs {
     width: 100%; }
     .container .inputs .create-task {
@@ -210,6 +242,25 @@ page {
             background-color: white;
             border-radius: 50%;
             position: absolute; }
+    .container .inputs .move-to-group {
+      background-color: white;
+      color: #444;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px; }
+      .container .inputs .move-to-group .header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 36rpx;
+        border-bottom: 1px solid ghostwhite; }
+        .container .inputs .move-to-group .header text {
+          margin-right: 5px;
+          color: royalblue; }
+      .container .inputs .move-to-group .content .item {
+        width: 100%;
+        padding: 8px 0;
+        font-size: 38rpx; }
+        .container .inputs .move-to-group .content .item text {
+          padding-left: 10px; }
   .container i-action-sheet .header {
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
@@ -229,6 +280,47 @@ page {
       color: royalblue;
       font-weight: bold;
       z-index: 1; }
+  .container .modal {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #80808080;
+    color: black; }
+    .container .modal .wrap {
+      margin-top: -100px;
+      box-sizing: border-box;
+      background-color: ghostwhite;
+      border-radius: 8px; }
+      .container .modal .wrap .header {
+        text-align: center;
+        padding: 10px 0;
+        font-size: 16px;
+        font-weight: bold; }
+      .container .modal .wrap .content {
+        padding: 8px 14px;
+        box-sizing: border-box; }
+        .container .modal .wrap .content input {
+          padding: 4px 10px;
+          background-color: white;
+          border-radius: 5px; }
+      .container .modal .wrap .footer {
+        padding: 0;
+        display: flex;
+        justify-content: space-between; }
+        .container .modal .wrap .footer view {
+          width: 50%;
+          height: 100%;
+          text-align: center;
+          padding: 8px 0;
+          color: #3388ff; }
+        .container .modal .wrap .footer .cancel {
+          border-top: 2px solid #f3f3f3;
+          border-right: 2px solid #f3f3f3; }
+        .container .modal .wrap .footer .confirm {
+          border-top: 2px solid #f3f3f3; }
 
 @keyframes ishow {
   from {

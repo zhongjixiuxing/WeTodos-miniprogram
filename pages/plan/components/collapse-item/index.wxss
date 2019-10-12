@@ -1,0 +1,23 @@
+.i-collapse-item{
+    padding:6px 8px;
+}
+
+.i-collapse-item-title{vertical-align:middle}
+.i-collapse-item-title-wrap{
+    adding:2px 0 0;
+    width: 100%;
+}
+.title-content{
+    border-radius: 5px;
+    display: inline-block;
+    background-color: #4444443d;
+    padding: 4px 8px;
+
+}
+.i-collapse-item-content{
+    display:none;
+    margin-top: 8px;
+}
+.i-collapse-item-show-content{display:block}
+.i-collapse-item-arrow{transition:transform .2s ease-in-out}
+.i-collapse-item-arrow-show{transition:transform .2s ease-in-out;transform:rotate(90deg)}

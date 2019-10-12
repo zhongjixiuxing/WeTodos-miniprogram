@@ -1,15 +1,20 @@
+import store from '../../store';
+import create from '../../plugins/westore/utils/create';
+const {getCurrentRouteUrl, fillNewTaskObj, getDateNo} = require('../../utils/util');
+
 const app = getApp()
 
-Page({
-
+create(store,{
   /**
    * 页面的初始数据
    */
   data: {
     isCreateTask: false,
     isUpdateListName: false,
+    isInputNewListName: false,
     actionsVisible: false,
     isUpdateTheme: false,
+    isMoveToGroup: false,
     actions: [
       {
         name: '重命名清单',
@@ -50,99 +55,84 @@ Page({
         color: 'red'
       }
     ],
-    list: {
-      name: 'anxing',
-      input: 'anxng',
-      theme: {
-        type: 'color',
-        value: '#FF6666'
-      },
-      tasks: [{
-        id: '001',
-        name: '计划',
-        state: 'pending',
-        important: false,
-      },{
-        id: '002',
-        name: '计划23生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成生命周期函数--监听页面初次渲染完成',
-        state: 'pending',
-        important: false,
-      }]
-    },
-    themes: {
-      selected: {
-        type: 'color', // color or picture,
-        index: 0,
-      },
-      colors: [{
-        value: '#996699',
-      }, {
-        value: '#0099CC'
-      }, {
-        value: '#FF6666'
-      }, {
-        value: '#003366'
-      }, {
-        value: '#663366'
-      }, {
-        value: '#FFFF00'
-      }, {
-        value: '#0066CC'
-      }, {
-        value: '#993333'
-      }, {
-        value: '#CC0033'
-      }, {
-        value: '#333399'
-      }, {
-        value: '#003399'
-      }, {
-        value: '#99CC00'
-      }, {
-        value: '#9933FF'
-      }, {
-        value: '#6666CC'
-      }, {
-        value: '#339933'
-      }, {
-        value: '#009966'
-      }, {
-        value: '#336699'
-      }, {
-        value: '#99CCFF'
-      }, {
-        value: '#3399CC'
-      }, {
-        value: '#FF33CC'
-      }],
-
-      pictures: [{
-        value: 'https://i.ibb.co/JKm36cW/forest-4507031-640.jpg',
-      },{
-        value: 'https://i.ibb.co/5RGDxSR/fox-4505465-640.jpg',
-      },{
-        value: 'https://i.ibb.co/Z1DMkbh/landscape-4487659-640.jpg',
-      },{
-        value: 'https://i.ibb.co/kcXM24z/milky-way-4416194-640.jpg',
-      },{
-        value: 'https://i.ibb.co/b2c6x4T/milky-way-4484593-640.jpg',
-      },{
-        value: 'https://i.ibb.co/k468VM6/milky-way-4500469-640.jpg',
-      },{
-        value: 'https://i.ibb.co/bP6wgtN/moon-4498253-640.jpg',
-      },{
-        value: 'https://i.ibb.co/wNdT7CN/park-4495453-640.jpg',
-      },{
-        value: 'https://i.ibb.co/BybNqBw/sailing-boat-4060710-640.jpg',
-      }]
-    }
+    infos: null,
+    list: null,
+    groups: [],
+    currentGroup: null,
+    themes: null,
+    todayNo: getDateNo()
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function () {
+  onLoad: function (opts) {
+    const tasks = this.store.data.infos.tasks;
+    const lists = this.store.data.infos.lists;
+    const listTasks = [];
+    for (let i=0; i<tasks.length; i++) {
+      if (tasks[i].lid === opts.lid) {
+        listTasks.push(tasks[i]);
+      }
+    }
 
+    let list;
+    let currentGroup = null;
+    let groups = [];
+    for (let i=0; i<lists.length; i++) {
+      if (lists[i].id === opts.lid) {
+        list = lists[i];
+        continue;
+      }
+    }
+
+    if (!list) {
+      throw new Error('List ID not found: ' + opts.lid);
+    }
+
+    for (let i=0; i<lists.length; i++) {
+      if (lists[i].gid === 'group') {
+        if (lists[i].id !== list.gid) {
+          groups.push(lists[i]);
+        } else {
+          currentGroup = lists[i];
+        }
+      }
+    }
+
+    list.tasks = listTasks;
+
+    const data = {
+      list,
+      infos: this.store.data.infos,
+      currentGroup
+    };
+
+    if (opts.isNew) {
+        data.isInputNewListName = true;
+    }
+    if (groups.length === 0) {
+      const actions = this.data.actions;
+      actions.splice(1,1); // disable "move to group" action
+    } else {
+      data.groups = groups;
+    }
+
+    // update theme configure
+    const listTheme = list.theme;
+    this.store.data.themes.selected.type = listTheme.type;
+    this.store.data.themes.selected.index = 0;
+    for (let i=0; i<this.store.data.themes[`${listTheme.type}s`].length; i++) {
+      const v = this.store.data.themes[`${listTheme.type}s`][i];
+      if (v.value === listTheme.value) {
+        this.store.data.themes.selected.index = i;
+        break;
+      }
+    }
+
+    data.themes = this.store.data.themes;
+    this.update();
+    this.setData(data);
   },
 
   /**
@@ -194,11 +184,12 @@ Page({
   },
 
   handleTaskState: function (e) {
-    console.log('handleTaskState --------- : ', e);
+    console.log('handleTaskState -------- : ', e);
   },
 
   goback: function (e) {
-    wx.navigateTo({
+    console.log('goback------------------------ : ', e);
+    wx.redirectTo({
       url: '/pages/home/home'
     })
   },
@@ -207,18 +198,45 @@ Page({
     const value = e.detail.value.trim();
     if (value && value !== '') {
       const newList = this.data.list;
-      newList.tasks.push({
+      const task = fillNewTaskObj({
         id: Date.now(),
         name: e.detail.value,
         state: 'pending',
         important: false,
+        lid: newList.id,
       });
+      newList.tasks.push(task);
       this.setData({
         list: newList
       });
+
+      this.store.data.infos.tasks.push(task);
+      this.update();
+
+      newList.taskCount += 1;
+      this.updateListSync(newList);
     }
 
     this.revertCreateTaskInput();
+  },
+
+  updateListSync(newList) {
+    let list;
+    const lists = this.store.data.infos.lists;
+    for (let i=0; i<lists.length; i++) {
+      if (lists[i].id === newList.id) {
+        list = lists[i];
+        const tempList = {...newList};
+        delete tempList.tasks; // delete tasks property
+        this.store.data.infos.lists[i] = tempList;
+        this.update();
+        return;
+      }
+    }
+
+    if (!list) {
+      throw new Error(`List ID not found: ${newList.id}`);
+    }
   },
 
   createTaskByBlurEvent(e) {
@@ -248,6 +266,17 @@ Page({
         this.setData({
           list: newList
         });
+        const tasks = this.store.data.infos.tasks;
+        for (let k=0; k<tasks.length; k++) {
+          if (tasks[k].id === task.id) {
+            tasks[k].important = task.important;
+            this.store.data.infos.tasks = tasks;
+
+            this.update();
+            break;
+          }
+        }
+
         break;
       }
     }
@@ -269,26 +298,39 @@ Page({
     }
   },
   handleCancel1(e) {
-    console.log("handleCancel1 --------------- : ", e);
+    console.log("handleCancel1 ---------------- : ", e);
     this.setData({
       isUpdateTheme: false,
     })
   },
 
   actionClick(e) {
-    console.log("handleClickItem1 --------------- : ", e);
-    switch (e.detail.index) {
-      case 0:  // rename list name
+    const action = this.data.actions[e.detail.index];
+
+    switch (action.name) {
+      case '重命名清单':
         this.setData({
           isUpdateListName: !this.isUpdateListName,
           actionsVisible: false,
         });
-      case 2:  // rename list name
+        break;
+      case '将列表移动到...':
+        this.setData({
+          isUpdateListName: false,
+          actionsVisible: false,
+          isUpdateTheme: false,
+          isMoveToGroup: true
+        });
+        break;
+      case '更改主题':
         this.setData({
           isUpdateListName: false,
           actionsVisible: false,
           isUpdateTheme: true
         });
+        break;
+      case '删除清单':
+        this.deleteList();
         break;
     }
   },
@@ -300,13 +342,15 @@ Page({
   revertActions() {
     this.setData({
       actionsVisible: !this.data.actionsVisible,
-      isUpdateTheme: false
+      isUpdateTheme: false,
+      isMoveToGroup: false,
     });
   },
   updateListName(e) {
     const name = e.detail.value.trim();
 
     this.setData({
+      isInputNewListName: false,
       ['list.name']: name,
       isUpdateListName: false,
     });
@@ -336,5 +380,54 @@ Page({
     this.setData({
       isUpdateTheme: false,
     });
+  },
+  closeMoveToGroup(e) {
+    this.setData({
+      isMoveToGroup: false,
+    });
+  },
+  changeGroup(e) {
+    const group = e.currentTarget.dataset.group;
+    const oldGid = this.data.list.gid;
+    this.data.list.gid = group.id;
+    const groups = this.data.groups;
+    if (this.data.currentGroup) {
+      groups.push(this.data.currentGroup);
+    }
+
+    for (let i=0; i<groups.length; i++) {
+      if (groups[i].id === group.id) {
+        groups.splice(i, 1);
+        break;
+      }
+    }
+
+    this.setData({
+      'list.gid': group.id,
+      currentGroup: group,
+      groups,
+      isMoveToGroup: false,
+    });
+
+    this.updateListSync(this.data.list);
+  },
+  deleteList() {
+    const lists = this.store.data.infos.lists;
+    for (let i=0; i<lists.length; i++) {
+      if (lists[i].id === this.data.list.id) {
+        lists.splice(i, 1);
+
+        this.store.data.infos.lists = lists;
+        this.update();
+        break;
+      }
+    }
+
+    this.goback();
+  },
+  goTaskPage(e) {
+    wx.redirectTo({
+      url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
+    })
   }
 })

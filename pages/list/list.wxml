@@ -1,7 +1,9 @@
-<view class="container" style="{{list.theme.type === 'color' ? 'background-color: ' + list.theme.value : 'background-image: url('+list.theme.value + ')'}}">
+<wxs module="util" src="../home/util.wxs"></wxs>
+
+<view class="container" wx:if="{{list}}" style="{{list.theme.type === 'color' ? 'background-color: ' + list.theme.value : 'background-color: #3388ff; background-image: url('+list.theme.value + ')'}}">
     <view class="header">
         <view class="wrap">
-            <view class="left" bindtap="goback">
+            <view class="left" catchtap="goback">
                 <i-icon type="return" size="22" color="white"/>
                 <text>清单</text>
             </view>
@@ -9,34 +11,44 @@
                 <text>{{list.name}}</text>
             </view>
             <view class="right">
-                <i-icon type="more" size="24" fontWeight="bold" color="white" bindtap="revertActions"/>
+                <i-icon type="more" size="24" fontWeight="bold" color="white" catchtap="revertActions"/>
             </view>
         </view>
     </view>
 
     <view class="content">
         <view class="tasks">
-            <view class="task" wx:for="{{list.tasks}}" wx:for-item="task" wx:key="id">
-                <view class="checkbox" bindtap="revertState" data-task="{{task}}">
-                    <i-icon wx:if="{{task.state === 'finished'}}" type="success_fill" size="32" color="green" bindtap="revertState" data-task="{{task}}"/>
+            <view class="task" wx:for="{{list.tasks}}" wx:for-item="task" wx:key="id" catchtap="goTaskPage" data-task="{{task}}">
+                <view class="checkbox" catchtap="revertState" data-task="{{task}}">
+                    <i-icon wx:if="{{task.state === 'finished'}}" type="success_fill" size="32" color="green" catchtap="revertState" data-task="{{task}}"/>
                 </view>
                 <view class="main">
                     <text class="name">{{task.name}}</text>
                     <block>
                         <view class="subline">
-                            明天
+                            <view class="listname" wx:if="{{task.lid && task.lid !== ''}}">
+                                <text>{{util.getTaskListName(infos.lists, task)}}</text>
+                            </view>
+                            <view class="steps" wx:if="{{task.steps.length !== 0}}">
+                                <i-icon type="{{util.isFinishedSteps(task.steps) ? 'right' : 'switch'}}" size="14" color="gray"/>
+                                <text>{{util.countFinishedSteps(task.steps)}}/{{task.steps.length}}</text>
+                            </view>
+                            <view class="expire" wx:if="{{task.expireDay && task.expireDay !== 0}}" style="{{task.expireDay < todayNo ? 'color: red;' : ''}}">
+                                <i-icon type="activity" size="12" color="{{task.expireDay < todayNo ? 'red' : 'gray'}}"/>
+                                <text>{{util.specFormatDate(task.expireDay)}}</text>
+                            </view>
                         </view>
                     </block>
                 </view>
                 <view class="important">
-                    <i-icon wx:if="{{task.important === false}}" type="collection" size="22" color="grey" bindtap="revertImportant" data-task="{{task}}"/>
-                    <i-icon wx:else type="collection_fill" size="22" color="grey" bindtap="revertImportant" data-task="{{task}}" />
+                    <i-icon wx:if="{{task.important === false}}" type="collection" size="24" color="grey" catchtap="revertImportant" data-task="{{task}}"/>
+                    <i-icon wx:else type="collection_fill" size="24" color="{{list.theme.type === 'color' ? list.theme.value : '#3388ff'}}" catchtap="revertImportant" data-task="{{task}}" />
                 </view>
             </view>
         </view>
     </view>
-    <view class="footer" wx:if="{{isCreateTask === false && isUpdateListName === false && isUpdateTheme === false}}">
-        <view class="wrap" bindtap="revertCreateTaskInput">
+    <view class="footer" wx:if="{{isCreateTask === false && isUpdateListName === false && isUpdateTheme === false && isInputNewListName === false && isMoveToGroup === false}}">
+        <view class="wrap" catchtap="revertCreateTaskInput">
             <i-icon type="add" size="26" color="white"/>
             <text>添加任务</text>
         </view>
@@ -51,20 +63,28 @@
                 <text>重命名清单</text>
             </view>
             <view class="content">
-                <input type="text" placeholder="清单名称" focus="{{isUpdateListName}}" value="{{list.name}}" bindconfirm="updateListName" bindblur="updateListName"/>
+                <input type="text" placeholder="清单名称" focus="{{isUpdateListName}}" value="{{list.name}} ------ " bindconfirm="updateListName" bindblur="updateListName"/>
             </view>
         </view>
+<!--        <view class="updateTaskName" wx:elif="{{isInputNewListName}}">-->
+<!--            <view class="title">-->
+<!--                <text>命名新清单</text>-->
+<!--            </view>-->
+<!--            <view class="content" wx:if="{{isInputNewListName}}">-->
+<!--                <input type="text" wx:if="{{isInputNewListName}}" placeholder="新清单名称" focus="{{isInputNewListName}}" value="{{list.name}}" bindconfirm="updateListName" bindblur="updateListName"/>-->
+<!--            </view>-->
+<!--        </view>-->
 
         <view class="updateTheme" wx:elif="{{isUpdateTheme}}">
             <view class="header">
-                <i-icon type="return" size="24" color="royalblue" bindtap="openActions"/>
+                <i-icon type="return" size="24" color="royalblue" catchtap="openActions"/>
                 <text>选择主题</text>
-                <text class="close" bindtap="closeUpdateThemeInput">完成</text>
+                <text class="close" catchtap="closeUpdateThemeInput">完成</text>
             </view>
             <view class="content">
                 <view class="top">
-                    <text class="color {{themes.selected.type === 'color' ? 'active':''}}" bindtap="changeSelectThemeType" data-type="color">颜色</text>
-                    <text class="picture {{themes.selected.type === 'picture' ? 'active':''}}" bindtap="changeSelectThemeType" data-type="picture">照片</text>
+                    <text class="color {{themes.selected.type === 'color' ? 'active':''}}" catchtap="changeSelectThemeType" data-type="color">颜色</text>
+                    <text class="picture {{themes.selected.type === 'picture' ? 'active':''}}" catchtap="changeSelectThemeType" data-type="picture">照片</text>
                 </view>
                 <view class="bottom">
                     <block wx:if="{{themes.selected.type === 'color'}}">
@@ -73,7 +93,7 @@
                                   wx:for-item="c"
                                   wx:for-index="idx"
                                   wx:key="value"
-                                  bindtap="updateTheme" data-idx="{{idx}}"
+                                  catchtap="updateTheme" data-idx="{{idx}}"
                                   style="{{'background-color:' + c.value}}">
                                 <view class="point" wx:if="{{idx === themes.selected.index}}"></view>
                             </view>
@@ -86,7 +106,7 @@
                                   wx:for-item="p"
                                   wx:for-index="idx"
                                   wx:key="value"
-                                  bindtap="updateTheme" data-idx="{{idx}}">
+                                  catchtap="updateTheme" data-idx="{{idx}}">
                                 <image class="img" src="{{p.value}}" mode="cover"></image>
                                 <view class="point" wx:if="{{idx === themes.selected.index}}"></view>
                             </view>
@@ -95,14 +115,41 @@
                 </view>
             </view>
         </view>
+
+        <view class="move-to-group" wx:elif="{{isMoveToGroup}}">
+            <view class="header">
+                <i-icon type="return" size="24" color="royalblue" catchtap="openActions"/>
+                <text class="close" catchtap="closeMoveToGroup">完成</text>
+            </view>
+            <view class="content">
+                <view class="item"
+                      catchtap="changeGroup"
+                      data-group="{{g}}"
+                      wx:for="{{groups}}"
+                      wx:for-item="g"
+                      wx:for-index="gIdx"
+                      wx:key="id">
+                    <i-icon type="createtask" size="20" color="grey" catchtap="openActions"/>
+                    <text>{{g.name}}</text>
+                </view>
+            </view>
+        </view>
     </view>
 
     <i-action-sheet visible="{{ actionsVisible }}" actions="{{ actions }}" show-cancel bind:cancel="handleCancel1" bind:click="actionClick">
         <view slot="header" class="header">
             <text>清单选项</text>
-            <view class="action" bindtap="revertActions">完成</view>
+            <view class="action" catchtap="revertActions">完成</view>
         </view>
     </i-action-sheet>
 
+    <view class="modal" wx:if="{{isInputNewListName}}">
+        <view class="wrap">
+            <view class="header">新列表命名</view>
+            <view class="content">
+                <input type="text" focus="{{isInputNewListName}}" placeholder="列表名称" bindconfirm="updateListName" data-value="{{list.name}}"/>
+            </view>
+        </view>
+    </view>
 
 </view>

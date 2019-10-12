@@ -8,7 +8,7 @@
             </view>
 
             <view class="icons">
-                <block wx:if="{{showContent !== ''}}"><i-icon size="20" type="more" color="#80848f" fontWeight="bold"/> </block>
+                <block wx:if="{{showContent !== ''}}"><i-icon catchtap="more" class="more" size="20" type="more" color="#80848f" fontWeight="bold"/> </block>
                 <text space="ensp">\t  </text>
                 <i-icon size="16" type="enter" color="#80848f" i-class="{{ showContent ? 'i-collapse-item-arrow-show' : 'i-collapse-item-arrow' }}"/>
             </view>

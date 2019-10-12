@@ -1,0 +1,242 @@
+<wxs module="util" src="../home/util.wxs"></wxs>
+
+
+<view class="editor-container" wx:if="{{isEditorVisible}}" style="{{userProfile.mydayList.theme.type === 'color' ? 'background-color: ' + userProfile.mydayList.theme.value : 'background-image: url('+userProfile.mydayList.theme.value + ')'}}">
+    <view class="header">
+        <text class="title">重要</text>
+        <text class="cancel" catchtap="closeEditorPage">取消</text>
+    </view>
+
+    <view class="content">
+        <view class="tasks">
+            <view class="task" wx:for="{{util.getMydayTasks(infos.tasks, userProfile)}}" wx:for-item="task" wx:key="id">
+                <view class="checkbox" catchtap="toggleTaskSelect" data-task="{{task}}">
+                    <i-icon wx:if="{{util.includes(selectedTasks, task.id)}}" type="success_fill" size="32" color="green" catchtap="toggleTaskSelect" data-task="{{task}}"/>
+                </view>
+                <view class="main">
+                    <text class="name">{{task.name}}</text>
+                    <block>
+                        <view class="subline">
+                            <view class="listname" wx:if="{{task.lid && task.lid !== ''}}">
+                                <text>{{util.getTaskListName(infos.lists, task)}}</text>
+                            </view>
+                            <view class="steps" wx:if="{{task.steps.length !== 0}}">
+                                <i-icon type="{{util.isFinishedSteps(task.steps) ? 'right' : 'switch'}}" size="14" color="gray"/>
+                                <text>{{util.countFinishedSteps(task.steps)}}/{{task.steps.length}}</text>
+                            </view>
+                            <view class="expire" wx:if="{{task.expireDay && task.expireDay !== 0}}" style="{{task.expireDay < todayNo ? 'color: red;' : ''}}">
+                                <i-icon type="activity" size="12" color="{{task.expireDay < todayNo ? 'red' : 'gray'}}"/>
+                                <text>{{util.specFormatDate(task.expireDay)}}</text>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+                <view class="important">
+                    <i-icon wx:if="{{task.important === false}}" type="collection" size="24" color="grey" catchtap="revertImportant" data-task="{{task}}"/>
+                    <i-icon wx:else type="collection_fill" size="24" color="{{userProfile.mydayList.theme.type === 'color' ? userProfile.mydayList.theme.value : '#3388ff'}}" catchtap="revertImportant" data-task="{{task}}" />
+                </view>
+            </view>
+        </view>
+        <view class="tips" wx:if="{{selectedTasks.length !== 0}}">
+            <text>已选择 {{selectedTasks.length}} 个任务</text>
+        </view>
+    </view>
+
+    <view class="footer">
+        <view class="wrap">
+            <view class="item" catchtouchmove="true" data-action="all-select" catchtap="tasksActionClick">
+                <i-icon type="other" size="32" color="#3388ff"/>
+                <text wx:if="{{!util.isAllImportantSelected(infos.tasks, userProfile, selectedTasks)}}">全选</text>
+                <text wx:else>全部清除</text>
+            </view>
+            <block wx:if="{{selectedTasks.length === 0}}">
+                <view class="item" data-action="move">
+                    <i-icon type="send" size="28" color="lightgrey"/>
+                    <text>移动</text>
+                </view>
+                <view class="item" data-action="expire">
+                    <i-icon type="activity" size="28" color="lightgrey"/>
+                    <text>截止日期</text>
+                </view>
+                <view class="item" data-action="delete">
+                    <i-icon type="trash" size="30" color="lightgrey"/>
+                    <text>删除</text>
+                </view>
+            </block>
+
+            <block wx:else>
+                <view class="item" data-action="move" catchtap="tasksActionClick">
+                    <i-icon type="send" size="28" color="#3388ff"/>
+                    <text>移动</text>
+                </view>
+<!--                <view class="item" data-action="expire" catchtap="tasksActionClick">-->
+                    <picker mode="date" value="{{expireDateCfg.start}}" start="{{expireDateCfg.start}}" bindchange="updateTasksExpireDate">
+                        <view class="item" data-action="expire" catchtap="tasksActionClick">
+                            <i-icon type="activity" size="28" color="#3388ff"/>
+                            <text>截止日期</text>
+                        </view>
+                    </picker>
+<!--                    <text></text>-->
+<!--                </view>-->
+                <view class="item" data-action="delete" catchtap="tasksActionClick">
+                    <i-icon type="trash" size="30" color="#3388ff"/>
+                    <text>删除</text>
+                </view>
+            </block>
+        </view>
+    </view>
+
+    <i-drawer mode="left" visible="{{tasksMoveDrawerVisible}}" bind:close="toggleTasksMoveDrawerVisible">
+        <view class="move-to-list-drawer">
+            <view class="header">
+                <text class="cancel" catchtap="toggleTasksMoveDrawerVisible">取消</text>
+                <text class="title">移动至</text>
+            </view>
+
+            <view class="content">
+                <view class="lists">
+                    <view class="main item" catchtap="moveToList">
+                        <i-icon type="homepage" size="28" color="#3388ff"/>
+                        <text>任务</text>
+                    </view>
+
+                    <block wx:for="{{infos.lists}}" wx:key="id" wx:for-item="item">
+                        <view class="item" wx:if="{{item.gid !== 'group'}}" catchtap="moveToList" data-list="{{item}}">
+                            <i-icon type="other" size="28" color="#3388ff"/>
+                            <text>{{item.name}}</text>
+                        </view>
+                    </block>
+                </view>
+            </view>
+
+            <view class="footer">
+                <view class="wrap">
+                    <i-icon type="add" size="28" color="#3388ff"/>
+                    <text>新建清单</text>
+                </view>
+            </view>
+        </view>
+
+
+    </i-drawer>
+</view>
+
+<!--------------------------------------------------------------------------------------------------------------------->
+
+<view class="container" wx:else style="{{userProfile.mydayList.theme.type === 'color' ? 'background-color: ' + userProfile.mydayList.theme.value : 'background-image: url('+userProfile.mydayList.theme.value + ')'}}">
+    <view class="header">
+        <view class="wrap">
+            <view class="left" catchtap="goback">
+                <i-icon type="return" size="22" color="white"/>
+                <text>清单</text>
+            </view>
+            <view class="name">
+<!--                <text>重要</text>-->
+            </view>
+            <view class="right">
+                <i-icon type="more" size="24" fontWeight="bold" color="white" catchtap="revertActions"/>
+            </view>
+        </view>
+    </view>
+
+    <view class="content">
+        <view class="header">
+            <text class="title">我的一天</text>
+            <text class="date">{{currentDate}}</text>
+        </view>
+
+        <view class="tasks">
+            <block wx:for="{{util.getMydayTasks(infos.tasks, userProfile)}}" wx:for-item="task" wx:key="id">
+                <view class="task" catchtap="goTaskPage" data-task="{{task}}">
+                    <view class="checkbox" catchtap="revertState" data-task="{{task}}">
+                        <i-icon wx:if="{{task.state === 'finished'}}" type="success_fill" size="32" color="green" catchtap="revertState" data-task="{{task}}"/>
+                    </view>
+                    <view class="main">
+                        <text class="name">{{task.name}}</text>
+                        <block>
+                            <view class="subline">
+                                <view class="listname" wx:if="{{task.lid && task.lid !== ''}}">
+                                    <text>{{util.getTaskListName(infos.lists, task)}}</text>
+                                </view>
+                                <view class="steps" wx:if="{{task.steps.length !== 0}}">
+                                    <i-icon type="{{util.isFinishedSteps(task.steps) ? 'right' : 'switch'}}" size="14" color="gray"/>
+                                    <text>{{util.countFinishedSteps(task.steps)}}/{{task.steps.length}}</text>
+                                </view>
+                                <view class="expire" wx:if="{{task.expireDay && task.expireDay !== 0}}" style="{{task.expireDay < todayNo ? 'color: red;' : ''}}">
+                                    <i-icon type="activity" size="12" color="{{task.expireDay < todayNo ? 'red' : 'gray'}}"/>
+                                    <text>{{util.specFormatDate(task.expireDay)}}</text>
+                                </view>
+                            </view>
+                        </block>
+                    </view>
+                    <view class="important">
+                        <i-icon wx:if="{{task.important === false}}" type="collection" size="24" color="grey" catchtap="revertImportant" data-task="{{task}}"/>
+                        <i-icon wx:else type="collection_fill" size="24" color="{{userProfile.mydayList.theme.type === 'color' ? userProfile.mydayList.theme.value : '#3388ff'}}" catchtap="revertImportant" data-task="{{task}}" />
+                    </view>
+                </view>
+            </block>
+        </view>
+    </view>
+
+    <view class="footer" wx:if="{{isCreateTask === false && isUpdateTheme === false}}">
+        <view class="wrap" catchtap="revertCreateTaskInput">
+            <i-icon type="add" size="26" color="white"/>
+            <text>添加任务</text>
+        </view>
+    </view>
+    <view class="inputs" wx:else>
+        <view class="create-task" wx:if="{{isCreateTask}}">
+            <view class="checkbox"></view>
+            <input type="text" placeholder="添加任务" focus="{{isCreateTask}}" bindconfirm="createTask" bindblur="createTaskByBlurEvent" />
+        </view>
+
+        <view class="updateTheme" wx:elif="{{isUpdateTheme}}">
+            <view class="header">
+                <i-icon type="return" size="24" color="royalblue" catchtap="openActions"/>
+                <text>选择主题</text>
+                <text class="close" catchtap="closeUpdateThemeInput">完成</text>
+            </view>
+            <view class="content">
+                <view class="top">
+                    <text class="color {{userProfile.mydayList.theme.type === 'color' ? 'active':''}}" catchtap="changeSelectThemeType" data-type="color">颜色</text>
+                    <text class="picture {{userProfile.mydayList.theme.type === 'picture' ? 'active':''}}" catchtap="changeSelectThemeType" data-type="picture">照片</text>
+                </view>
+                <view class="bottom">
+                    <block wx:if="{{userProfile.mydayList.theme.type === 'color'}}">
+                        <view class="colors">
+                            <view class="item" wx:for="{{themes.colors}}"
+                                  wx:for-item="c"
+                                  wx:for-index="idx"
+                                  wx:key="value"
+                                  catchtap="updateTheme" data-idx="{{idx}}"
+                                  style="{{'background-color:' + c.value}}">
+                                <view class="point" wx:if="{{idx === themes.selected.index}}"></view>
+                            </view>
+                        </view>
+                    </block>
+                    <block wx:else>
+                        <view class="picture-list">
+                            <view class="item"
+                                  wx:for="{{themes.pictures}}"
+                                  wx:for-item="p"
+                                  wx:for-index="idx"
+                                  wx:key="value"
+                                  catchtap="updateTheme" data-idx="{{idx}}">
+                                <image class="img" src="{{p.value}}" mode="cover"></image>
+                                <view class="point" wx:if="{{idx === themes.selected.index}}"></view>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <i-action-sheet visible="{{ actionsVisible }}" actions="{{ actions }}" show-cancel bind:cancel="handleCancel1" bind:click="actionClick">
+        <view slot="header" class="header">
+            <text>清单选项</text>
+            <view class="action" catchtap="revertActions">完成</view>
+        </view>
+    </i-action-sheet>
+
+</view>

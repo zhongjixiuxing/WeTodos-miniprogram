@@ -27,6 +27,7 @@ page {
         justify-content: center;
         align-items: center;
         z-index: 1;
+        font-size: 16px;
       }
 
       .name{
@@ -34,6 +35,7 @@ page {
         width: 100%;
         text-align: center;
         font-weight: bold;
+        font-size: 16px;
       }
 
       .right{
@@ -47,6 +49,7 @@ page {
     width: 100%;
     box-sizing: border-box;
     padding: 3%;
+    overflow-y: auto;
 
     .tasks {
 
@@ -93,12 +96,51 @@ page {
             overflow: hidden;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 2;
+            font-size: 16px;
           }
 
           .subline{
-            font-size: 20rpx;
+            font-size: 12px;
             color: gray;
             font-weight: 400;
+            display: flex;
+            justify-items: center;
+
+            .listname{
+              text{
+                transform:scale(0.8);
+                margin-left: -6px;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 1;
+              }
+            }
+            .steps{
+              width: 100%;
+              max-width: 60px;
+              display: flex;
+              justify-content: start;
+              align-items: center;
+
+              text{
+                transform:scale(0.8);
+                margin-left: -3px;
+              }
+            }
+
+            .expire{
+              display: flex;
+              justify-content: start;
+              align-items: center;
+              width: 100%;
+              max-width: 116px;
+
+              text{
+                transform:scale(0.8);
+                margin-left: -6px;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 1;
+              }
+            }
           }
         }
       }
@@ -126,6 +168,7 @@ page {
 
       text{
         padding-left: 12px;
+        font-size: 15px;
       }
     }
   }
@@ -286,6 +329,36 @@ page {
         }
       }
     }
+
+    .move-to-group{
+      background-color: white;
+      color: #444;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+
+      .header{
+        display: flex;
+        justify-content: space-between;
+        font-size: 36rpx;
+        text{
+          margin-right: 5px;
+          color: royalblue;
+        }
+        border-bottom: 1px solid ghostwhite;
+      }
+
+      .content{
+        .item{
+          width: 100%;
+          padding: 8px 0;
+          font-size: 38rpx;
+
+          text{
+            padding-left: 10px;
+          }
+        }
+      }
+    }
   }
 
   i-action-sheet{
@@ -312,6 +385,62 @@ page {
         color: royalblue;
         font-weight: bold;
         z-index: 1;
+      }
+    }
+  }
+
+  .modal{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #80808080;
+    color: black;
+
+    .wrap{
+      margin-top: -100px;
+      box-sizing: border-box;
+      background-color: ghostwhite;
+      border-radius: 8px;
+      .header{
+        text-align: center;
+        padding: 10px 0;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .content{
+        padding: 8px 14px;
+        box-sizing: border-box;
+        input {
+          padding: 4px 10px;
+          background-color: white;
+          border-radius: 5px;
+        }
+      }
+
+      .footer{
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        view{
+          width: 50%;
+          height: 100%;
+          text-align: center;
+          padding: 8px 0;
+          color: #3388ff;
+        }
+
+        .cancel{
+          border-top: 2px solid #f3f3f3;
+          border-right: 2px solid #f3f3f3;
+        }
+
+        .confirm{
+          border-top: 2px solid #f3f3f3;
+        }
       }
     }
   }

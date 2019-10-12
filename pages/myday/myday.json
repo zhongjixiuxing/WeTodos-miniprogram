@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "i-icon": "../../iview-components/icon/index",
+    "i-action-sheet": "./action-sheet/index",
+    "i-input": "../../iview-components/input/index",
+    "i-radio": "../../iview-components/radio/index",
+    "i-drawer": "../../iview-components/drawer/index",
+    "i-button": "../../iview-components/button/index"
+  },
+  "disableScroll": true
+}

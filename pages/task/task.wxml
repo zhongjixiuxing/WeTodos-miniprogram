@@ -1,0 +1,102 @@
+<view class="container">
+  <view class="header white-bg">
+    <view class="wrap">
+      <view class="left" bindtap="goback">
+        <i-icon type="return" size="22" color="#3388ff" />
+        <text>返回</text>
+      </view>
+    </view>
+  </view>
+  <view class="content">
+    <view class="top white-bg">
+      <view class="checkbox" catchtap="revertState" data-task="{{task}}">
+        <i-icon wx:if="{{task.state === 'finished'}}" type="success_fill" size="32" color="green" catchtap="revertState" data-task="{{task}}"/>
+      </view>
+      <text wx:if="{{!isUpdateTaskName}}" class="name" catchtap="showUpdateNameInput">{{task.name}}</text>
+      <view class="name" wx:else>
+        <input cursor-spacing="20" type="text" value="{{task.name}}" placeholder="任务名称" focus="{{isUpdateTaskName}}" bindconfirm="updateName" bindblur="updateName" />
+      </view>
+      <view class="important">
+        <i-icon wx:if="{{task.important === false}}" type="collection" size="22" color="grey" catchtap="revertImportant" data-task="{{task}}"/>
+        <i-icon wx:else type="collection_fill" size="22" color="#3388ff" catchtap="revertImportant" data-task="{{task}}" />
+      </view>
+    </view>
+
+    <view class="bottom">
+      <view class="overflow">
+        <view class="add-steps white-bg">
+          <view class="step" wx:for="{{task.steps}}" wx:for-item="step" wx:for-index="idx" wx:key="value">
+            <view class="checkbox" catchtap="revertStep" data-step="{{step}}" data-idx="{{idx}}">
+              <i-icon wx:if="{{step.state === 'finished'}}" type="success_fill" size="26" color="green" catchtap="revertStep" data-step="{{step}}" data-idx="{{idx}}"/>
+            </view>
+
+            <textarea cursor-spacing="20" wx:if="{{(updateStepIdx === idx)}}" auto-height maxlength="{{1024}}" value="{{step.value}}" type="text" focus="{{true}}" bindconfirm="updateStepText" bindblur="updateStepText" data-step="{{step}}" data-idx="{{idx}}"/>
+            <text wx:else class="text" catchtap="showStepTextInput" data-idx="{{idx}}">{{step.value}}</text>
+
+            <i-icon type="close" size="18" color="#3388ff" catchtap="removeStep" data-step="{{step}}" data-idx="{{idx}}"/>
+          </view>
+          <block>
+            <view class="step add-step">
+              <block wx:if="{{!isAddStepInput}}">
+                <i-icon class="spec" type="add" size="28" color="#3388ff" catchtap="toggleAddStepInput"/>
+                <text class="text spec" catchtap="toggleAddStepInput">{{task.steps.length === 0 ? '添加步骤' : '下一步'}}</text>
+              </block>
+
+              <block wx:else>
+                <view class="checkbox">
+                </view>
+                <input cursor-spacing="20" type="text" placeholder="{{task.steps.length === 0 ? '添加步骤' : '下一步'}}" focus="{{isAddStepInput}}" bindconfirm="addStep" bindblur="addStep" />
+              </block>
+            </view>
+          </block>
+        </view>
+
+        <view wx:if="{{!task.isMyday}}" class="myday white-bg" catchtap="revertMyDay">
+          <i-icon type="flag" size="28" color="#647c90"/>
+          <text class="name">添加到我的一天</text>
+        </view>
+        <view wx:else class="myday-active white-bg" catchtap="revertMyDay">
+          <i-icon type="flag" size="28" color="#3388ff"/>
+          <text class="name">已添加到我的一天</text>
+
+          <i-icon class="close" type="close" size="20" color="#3388ff"/>
+        </view>
+
+        <!--      <view class="remind white-bg">-->
+        <!--        <i-icon type="remind" size="28" color="#3388ff"/>-->
+        <!--        <text class="name">提醒我</text>-->
+        <!--      </view>-->
+        <picker mode="date" value="{{expireDateCfg.start}}" start="{{expireDateCfg.start}}" bindchange="updateTasksExpireDate">
+          <view class="expire white-bg" wx:if="{{!task.expireDay || task.expireDay === 0}}">
+            <i-icon type="activity" size="28" color="#647c90"/>
+            <text class="name">添加截止日期</text>
+          </view>
+          <view class="expire-active white-bg" wx:else>
+            <i-icon type="activity" size="28" color="#3388ff"/>
+            <text class="name">{{expireDayString}} 到期</text>
+            <i-icon type="close" size="18" color="#3388ff" catchtap="unsetExpireDay"/>
+          </view>
+        </picker>
+
+
+        <!--      <view class="repeat white-bg">-->
+        <!--        <i-icon type="refresh" size="28" color="#3388ff"/>-->
+        <!--        <text class="name">重复</text>-->
+        <!--      </view>-->
+      </view>
+
+
+      <view class="memo white-bg" catchtap="openMemoTextarea">
+        <text class="add-memo" style="{{(!task.comment || task.comment === '') ? 'color: #647c9080;' : ''}}" wx:if="{{!isMemoInput}}">{{(!task.comment || task.comment === '') ? '添加备注' : task.comment}}</text>
+        <textarea wx:else focus="{{true}}" cursor-spacing="20" placeholder="添加备注" auto-height maxlength="{{-1}}" value="{{task.comment}}" type="text" bindconfirm="updateMemo" bindblur="updateMemo"/>
+      </view>
+
+    </view>
+  </view>
+  <view class="footer white-bg">
+    <view class="wrap flex-row-center">
+      <text>创建于 {{createdAt}}</text>
+      <i-icon type="trash" size="30" color="slategray" catchtap="deleteTask"/>
+    </view>
+  </view>
+</view>

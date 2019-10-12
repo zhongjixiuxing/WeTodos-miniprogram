@@ -27,11 +27,12 @@ Component({
             type: String,
             value: '16'
         },
+        groupId: String,
     },
 
     data: {
         showContent: '',
-        accordion: false
+        accordion: false,
     },
 
     options: {
@@ -39,6 +40,9 @@ Component({
     },
 
     methods: {
+        more(e) {
+            this.triggerEvent('more', {groupId: this.data.groupId});
+        },
         trigger(e) {
             const data = this.data;
             if (data.accordion) {

@@ -1,0 +1,195 @@
+page {
+  height: 100vh;
+  padding: 0; }
+
+.container {
+  height: 100vh;
+  padding: 0;
+  color: #3388ff;
+  background-color: #f3f3f3;
+  position: relative;
+  box-sizing: border-box; }
+  .container .flex-column-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; }
+  .container .flex-row-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center; }
+  .container .white-bg {
+    background-color: ghostwhite; }
+  .container .header {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    box-sizing: border-box; }
+    .container .header .wrap .left {
+      display: flex;
+      justify-content: start;
+      align-items: center; }
+      .container .header .wrap .left text {
+        margin-left: 6px; }
+  .container .content {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    display: inline-flex;
+    box-sizing: border-box;
+    flex-direction: column; }
+    .container .content .top {
+      padding: 16px 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between; }
+      .container .content .top .checkbox {
+        width: 20px;
+        min-width: 20px;
+        height: 20px;
+        min-height: 20px;
+        border-radius: 50%;
+        border: 2px solid gray;
+        display: flex;
+        justify-content: center;
+        align-items: center; }
+        .container .content .top .checkbox i-icon {
+          -webkit-animation-name: ishow;
+          -webkit-animation-timing-function: ease-in-out;
+          -webkit-animation-iteration-count: 1;
+          -webkit-animation-duration: 0.5s; }
+      .container .content .top .name {
+        width: 100%;
+        text-align: left;
+        font-size: 18px;
+        font-weight: bold;
+        padding-left: 14px;
+        color: black; }
+    .container .content .bottom {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      position: relative;
+      box-sizing: border-box; }
+      .container .content .bottom .overflow {
+        overflow-y: auto; }
+      .container .content .bottom .add-steps {
+        padding: 14px 2%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center; }
+        .container .content .bottom .add-steps text {
+          padding-left: 10px; }
+        .container .content .bottom .add-steps .step {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          padding: 8px 6px;
+          box-sizing: border-box; }
+          .container .content .bottom .add-steps .step textarea {
+            padding-left: 12px; }
+          .container .content .bottom .add-steps .step .text {
+            width: 100%;
+            padding-left: 12px;
+            color: #647c90; }
+          .container .content .bottom .add-steps .step .checkbox {
+            width: 15px;
+            min-width: 15px;
+            height: 15px;
+            min-height: 15px;
+            border-radius: 50%;
+            border: 2px solid gray;
+            display: flex;
+            justify-content: center;
+            align-items: center; }
+            .container .content .bottom .add-steps .step .checkbox i-icon {
+              -webkit-animation-name: ishow;
+              -webkit-animation-timing-function: ease-in-out;
+              -webkit-animation-iteration-count: 1;
+              -webkit-animation-duration: 0.5s; }
+        .container .content .bottom .add-steps .add-step {
+          color: #3388ff;
+          display: flex;
+          justify-content: space-between; }
+          .container .content .bottom .add-steps .add-step .spec {
+            margin-left: -6px; }
+          .container .content .bottom .add-steps .add-step .text {
+            color: #3388ff; }
+          .container .content .bottom .add-steps .add-step input {
+            width: 100%;
+            padding-left: 12px; }
+      .container .content .bottom .myday {
+        margin: 12px 0;
+        padding: 14px 2%;
+        color: #647c90; }
+        .container .content .bottom .myday text {
+          padding-left: 10px; }
+      .container .content .bottom .myday-active {
+        margin: 12px 0;
+        padding: 14px 2%;
+        color: #3388ff;
+        display: flex;
+        align-items: center; }
+        .container .content .bottom .myday-active text {
+          padding-left: 10px;
+          width: 100%; }
+      .container .content .bottom .remind {
+        margin: 12px 0 0 0;
+        padding: 14px 2%;
+        color: #647c90;
+        border-bottom: 1px solid ghostwhite; }
+        .container .content .bottom .remind text {
+          padding-left: 10px; }
+      .container .content .bottom .expire {
+        padding: 14px 2%;
+        color: #647c90;
+        border-bottom: 1px solid ghostwhite; }
+        .container .content .bottom .expire text {
+          padding-left: 10px; }
+      .container .content .bottom .expire-active {
+        padding: 14px 2%;
+        color: #647c90;
+        border-bottom: 1px solid ghostwhite;
+        display: flex;
+        box-sizing: border-box; }
+        .container .content .bottom .expire-active text {
+          padding-left: 10px;
+          color: #3388ff;
+          width: 100%; }
+      .container .content .bottom .repeat {
+        padding: 14px 2%;
+        color: #647c90;
+        border-bottom: 1px solid ghostwhite; }
+        .container .content .bottom .repeat text {
+          padding-left: 10px; }
+      .container .content .bottom .memo {
+        margin: 12px 0;
+        padding: 14px 2%;
+        box-sizing: border-box;
+        position: relative !important;
+        overflow: unset !important; }
+        .container .content .bottom .memo textarea {
+          box-sizing: border-box;
+          padding: 0 10px;
+          position: relative !important; }
+        .container .content .bottom .memo .add-memo {
+          color: #3388ff;
+          padding-left: 10px; }
+  .container .footer {
+    width: 100%;
+    padding: 8px 3%;
+    font-size: 14px;
+    color: #5f6368c9;
+    box-sizing: border-box; }
+    .container .footer .wrap {
+      position: relative; }
+      .container .footer .wrap i-icon {
+        position: absolute;
+        right: 2%; }
+
+/*# sourceMappingURL=task.wxss.map */

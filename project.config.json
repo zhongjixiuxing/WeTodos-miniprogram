@@ -14,8 +14,8 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.0.4",
-	"appid": "wx1762f62d11fbb20b",
-	"projectname": "todo",
+	"appid": "wxeb6bbdf8b948d4d0",
+	"projectname": "WeTodos",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},

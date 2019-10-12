@@ -1,0 +1,235 @@
+
+// 支持es4语法
+var filter = {
+	getGroupChildren: function(lists, gid) {
+	    var children = [];
+
+	    for (var i=0; i<lists.length; i++) {
+	        var list = lists[i];
+	        if (list.gid === 'group' || list.gid === 'none') {
+	            continue;
+	        }
+
+	        if (list.gid === gid) {
+	            children.push(list);
+	        }
+	    }
+
+	    return children;
+	},
+
+	// check groupListIds array has listId
+	hasGroupList: function(groupListIds, listId) {
+	    return groupListIds.indexOf(listId) === -1 ? false : true;
+	},
+
+	isGroupListChange: function(original, newList) {
+	    return original.sort().join(',') === newList.sort().join(',')
+	},
+	countImportantTask: function(tasks) {
+	    var count = 0;
+	    for (var i=0; i<tasks.length; i++) {
+	        if (tasks[i].important) {
+	            count = count + 1;
+	        }
+	    }
+
+	    return count;
+	},
+	countMydayTask: function(tasks) {
+        var count = 0;
+        for (var i=0; i<tasks.length; i++) {
+            if (tasks[i].isMyday) {
+                count = count + 1;
+            }
+        }
+
+        return count;
+    },
+    countPlanTask: function(tasks) {
+        var count = 0;
+        for (var i=0; i<tasks.length; i++) {
+            if (tasks[i].expireDay !== 0 && tasks[i].state !== 'finished') {
+                count = count + 1;
+            }
+        }
+
+        return count;
+    },
+    countOwnerlessTask: function(tasks) {
+        var count = 0;
+        for (var i=0; i<tasks.length; i++) {
+            if (tasks[i].lid === null && tasks[i].state !== 'finished') {
+                count = count + 1;
+            }
+        }
+
+        return count;
+    },
+	getImportantTasks: function(tasks, userProfile) {
+	    var result = [];
+        for (var i=0; i<tasks.length; i++) {
+            if (tasks[i].important) {
+                if (tasks[i].state === 'finished' && userProfile.importantList.finishedTaskVisible === false) {
+                    continue;
+                }
+                result.push(tasks[i]);
+            }
+        }
+
+        return result;
+	},
+	getMydayTasks: function(tasks, userProfile) {
+        var result = [];
+        for (var i=0; i<tasks.length; i++) {
+            if (tasks[i].isMyday) {
+                if (tasks[i].state === 'finished' && userProfile.mydayList.finishedTaskVisible === false) {
+                    continue;
+                }
+                result.push(tasks[i]);
+            }
+        }
+
+        return result;
+    },
+    getPlanTasks: function(tasks, userProfile) {
+        var result = [];
+        for (var i=0; i<tasks.length; i++) {
+            if (tasks[i].expireDay !== 0) {
+                if (tasks[i].state === 'finished' && userProfile.planList.finishedTaskVisible === false) {
+                    continue;
+                }
+                result.push(tasks[i]);
+            }
+        }
+
+        return result;
+    },
+	includes: function(arr, ele) {
+	    return arr.indexOf(ele) !== -1;
+	},
+	isAllImportantSelected: function(tasks, userProfile, selectedTasks) {
+	    selectedTasks = selectedTasks + ''; // change to string object
+	    var result = [];
+        for (var i=0; i<tasks.length; i++) {
+            if (tasks[i].important) {
+                if (tasks[i].state === 'finished' && userProfile.importantList.finishedTaskVisible === false) {
+                    continue;
+                }
+                result.push(tasks[i]);
+            }
+        }
+
+        if (selectedTasks+'' === '' && result.length === 0){
+            return false;
+        } else if (selectedTasks === '') {
+            return false;
+        }
+
+        var taskIds = selectedTasks.split(',');
+        return taskIds.length === result.length;
+	},
+	specFormatDate: function(day) {
+	    if ( day === 0) {
+	        return;
+	    }
+
+       var dayStr = day + '';
+       var date = Date.parse(dayStr.slice(0, 4) + '-' + dayStr.slice(4, 6) + '-' + dayStr.slice(6, 8))
+
+       return dateFormat(date, 'MM月dd日 周w');
+	},
+	getTaskListName: function(lists, task) {
+	    if (!task.lid || task.lid === ''){
+	        return;
+	    }
+
+	    for (var i=0; i<lists.length; i++) {
+	        if (lists[i].id === task.lid) {
+	            return lists[i].name;
+	        }
+	    }
+
+	    return '';
+	},
+	isFinishedSteps: function(steps) {
+	    for (var i=0; i<steps.length; i++) {
+            if (steps[i].state !== 'finished') {
+                return false;
+            }
+        }
+	    return true;
+	},
+	countFinishedSteps: function(steps) {
+	    var count = 0;
+
+        for (var i=0; i<steps.length; i++) {
+            if (steps[i].state === 'finished') {
+                count ++;
+            }
+        }
+        return count;
+    },
+
+}
+
+
+var regYear = getRegExp("(y+)", "i");
+
+var dateFormat = function(timestamp,format){
+  if (!format) {
+    format = "yyyy-MM-dd hh:mm:ss";
+  }
+  timestamp = parseInt(timestamp);
+  var realDate = getDate(timestamp);
+  function timeFormat(num) {
+    return num < 10 ? '0' + num : num;
+  }
+  var date = [
+    ["M+", timeFormat(realDate.getMonth() + 1)],
+    ["d+", timeFormat(realDate.getDate())],
+    ["h+", timeFormat(realDate.getHours())],
+    ["m+", timeFormat(realDate.getMinutes())],
+    ["s+", timeFormat(realDate.getSeconds())],
+    ["q+", Math.floor((realDate.getMonth() + 3) / 3)],
+    ["S+", realDate.getMilliseconds()],
+    ["w+", ['日', '一', '二', '三', '四', '五', '六'][realDate.getDay()]],
+  ];
+  var reg1 = regYear.exec(format);
+  if (reg1) {
+
+    format = format.replace(reg1[1], (realDate.getFullYear() + '').substring(4 - reg1[1].length));
+  }
+  for (var i=0;i<date.length;i++) {
+    var k = date[i][0];
+    var v = date[i][1];
+
+    var reg2 = getRegExp("(" + k + ")").exec(format);
+    if (reg2) {
+      format = format.replace(reg2[1], reg2[1].length == 1
+        ? v : ("00" + v).substring(("" + v).length));
+    }
+  }
+  return format;
+}
+
+// 导出对外暴露的属性
+module.exports = {
+	getGroupChildren: filter.getGroupChildren,
+	hasGroupList: filter.hasGroupList,
+	isGroupListChange: filter.isGroupListChange,
+	countImportantTask: filter.countImportantTask,
+	getImportantTasks: filter.getImportantTasks,
+	includes: filter.includes,
+	getImportantTasksWithSelect: filter.getImportantTasksWithSelect,
+	isAllImportantSelected: filter.isAllImportantSelected,
+	countMydayTask: filter.countMydayTask,
+	getMydayTasks: filter.getMydayTasks,
+	countPlanTask: filter.countPlanTask,
+	getPlanTasks: filter.getPlanTasks,
+	countOwnerlessTask: filter.countOwnerlessTask,
+	specFormatDate: filter.specFormatDate,
+	getTaskListName: filter.getTaskListName,
+	isFinishedSteps: filter.isFinishedSteps,
+	countFinishedSteps: filter.countFinishedSteps,
+}

@@ -1,7 +1,13 @@
 {
   "pages": [
-    "pages/list/list",
     "pages/home/home",
+    "pages/task/task",
+    "pages/list/list",
+    "pages/search/search",
+    "pages/ownertasks/ownertasks",
+    "pages/plan/plan",
+    "pages/myday/myday",
+    "pages/important/important",
     "pages/index/index",
     "pages/logs/logs"
   ],

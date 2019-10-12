@@ -1,33 +1,44 @@
-<view class="container">
+<wxs module="util" src="./util.wxs"></wxs>
+
+<view class="container" wx:if="{{infos}}">
     <view class="header">
         <view class="header-wrap">
             <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
             <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-            <i-icon type="search" size="20" color="#38f" fontWeight="bold"/>
+            <i-icon type="search" size="24" color="#38f" fontWeight="bold" bindtap="redirectPage" data-page="search"/>
         </view>
     </view>
+
     <view class="content">
         <view class="top">
             <view class="list">
-                <view class="item">
+                <view class="item" bindtap="redirectPage" data-page="myday">
                     <view class="wrap">
                         <i-icon type="integral" size="24" fontWeight="500" color="#80848f"/>
                         <text class="title">我的一天</text>
-                        <text class="number">1</text>
+                        <text class="number">{{util.countMydayTask(infos.tasks) === 0 ? '' : util.countMydayTask(infos.tasks)}}</text>
                     </view>
                 </view>
-                <view class="item">
+
+                <view class="item" bindtap="redirectPage" data-page="important">
                     <view class="wrap">
                         <i-icon type="collection" size="24" fontWeight="bold" color="#ed3f14"/>
                         <text class="title">重要</text>
-                        <text class="number">1</text>
+                        <text class="number">{{util.countImportantTask(infos.tasks) === 0 ? '' : util.countImportantTask(infos.tasks)}}</text>
                     </view>
                 </view>
-                <view class="item">
+                <view class="item" bindtap="redirectPage" data-page="plan">
                     <view class="wrap">
                         <i-icon type="activity" size="24" fontWeight="500" color="#80848f"/>
                         <text class="title">已计划日程</text>
-                        <text class="number">1</text>
+                        <text class="number">{{util.countPlanTask(infos.tasks) === 0 ? '' : util.countPlanTask(infos.tasks)}}</text>
+                    </view>
+                </view>
+                <view class="item" bindtap="redirectPage" data-page="ownertasks">
+                    <view class="wrap">
+                        <i-icon type="activity" size="24" fontWeight="500" color="#80848f"/>
+                        <text class="title">任务</text>
+                        <text class="number">{{util.countOwnerlessTask(infos.tasks) === 0 ? '' : util.countOwnerlessTask(infos.tasks)}}</text>
                     </view>
                 </view>
             </view>
@@ -35,88 +46,113 @@
         <view class="divLine"></view>
         <view class="bottom">
             <view class="list">
-                <i-collapse name="{{name}}">
-                    <i-collapse-item title="史蒂夫·乔布斯" name="name1">
-                        <view slot="content">
-                            <view class="group-content">
-                                <i-swipeout actions="{{swipeActions}}">
-                                    <view slot="content" class="group-item">
-                                        <view class="v-line"></view>
-                                        <i-icon type="other" size="24" fontWeight="500" color="#80848f"/>
-                                        <text class="title">我的一天</text>
-                                        <i-icon type="enter" size="16" fontWeight="500" color="#80848f"/>
+                <block wx:for="{{infos.lists}}" wx:key="id" wx:for-item="item" wx:for-index="idx">
+                    <block wx:if="{{item.gid === 'group'}}">
+                        <i-collapse name="{{item.name}}">
+                            <i-collapse-item title="{{item.name}}" bind:more="showGroupOptions" groupId="{{item.id}}">
+                                <view slot="content">
+                                    <view class="group-content">
+                                        <block wx:for="{{util.getGroupChildren(infos.lists, item.id)}}" wx:key="id" wx:for-item="list">
+                                            <i-swipeout actions="{{swipeActions}}" bind:change="listActionClick" data-list="{{list}}">
+                                                <view slot="content" class="group-item" bindtap='goListPage' data-list="{{list}}">
+                                                    <view class="v-line"></view>
+                                                    <i-icon type="other" size="24" fontWeight="500" color="{{list.theme.type === 'color' ? list.theme.value : '#0099CC'}}"/>
+                                                    <text class="title">{{list.name}}</text>
+                                                    <text class="number" wx:if="{{list.taskCount !== 0}}">{{list.taskCount}}</text>
+                                                </view>
+                                            </i-swipeout>
+                                        </block>
                                     </view>
-                                </i-swipeout>
-                            </view>
-                        </view>
-                    </i-collapse-item>
-                </i-collapse>
+                                </view>
+                            </i-collapse-item>
+                        </i-collapse>
+                    </block>
 
-                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
-                    <view slot="content" class="item">
-                        <view class="item-wrap">
-                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
-                            <text class="title">重要</text>
-                            <text class="number">121</text>
-                        </view>
-                    </view>
-                </i-swipeout>
-                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
-                    <view slot="content" class="item">
-                        <view class="item-wrap">
-                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
-                            <text class="title">重要</text>
-                            <text class="number">121</text>
-                        </view>
-                    </view>
-                </i-swipeout>
-                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
-                    <view slot="content" class="item">
-                        <view class="item-wrap">
-                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
-                            <text class="title">重要</text>
-                            <text class="number">121</text>
-                        </view>
-                    </view>
-                </i-swipeout>
-                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
-                    <view slot="content" class="item">
-                        <view class="item-wrap">
-                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
-                            <text class="title">重要</text>
-                            <text class="number">121</text>
-                        </view>
-                    </view>
-                </i-swipeout>
-                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
-                    <view slot="content" class="item">
-                        <view class="item-wrap">
-                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
-                            <text class="title">重要</text>
-                            <text class="number">121</text>
-                        </view>
-                    </view>
-                </i-swipeout>
-                <i-swipeout i-class="i-swipeout-demo-item" actions="{{swipeActions}}">
-                    <view slot="content" class="item" bindtap='goListPage' data-list="list">
-                        <view class="item-wrap">
-                            <i-icon type="other" size="24" fontWeight="bold" color="#ed3f14"/>
-                            <text class="title">重要</text>
-                            <text class="number">121</text>
-                        </view>
-                    </view>
-                </i-swipeout>
+                    <block wx:elif="{{item.gid === 'none'}}">
+                        <i-swipeout actions="{{swipeActions}}" bind:change="listActionClick" data-list="{{item}}">
+                            <view slot="content" class="item" bindtap='goListPage' data-list="{{item}}">
+                                <view class="item-wrap">
+                                    <i-icon type="other" size="24" fontWeight="bold" color="{{item.theme.type === 'color' ? item.theme.value : '#0099CC'}}"/>
+                                    <text class="title">{{item.name}}</text>
+                                    <text class="number" wx:if="{{item.taskCount !== 0}}">{{item.taskCount}}</text>
+                                </view>
+                            </view>
+                        </i-swipeout>
+                    </block>
+                </block>
             </view>
         </view>
     </view>
 
     <view class="footer">
         <view class="wrap">
-            <i-icon type="add" size="24" />
-            <text class="title">新建清单</text>
-            <view class="create-group">
+            <i-icon type="add" size="24" catchtap='newList' />
+            <text class="title" catchtap='newList'>新建清单</text>
+            <view class="create-group" catchtap='openNewGroupInput'>
                 <i-icon type="createtask" size="22"/>
                 <i-icon type="add" class="plus" />
+            </view>
+        </view>
+    </view>
+
+    <i-modal title="新组"
+             visible="{{ newGroupInput.visible }}"
+             bind:ok="createNewGroup"
+             bind:cancel="closeNewGroupInput"
+             ok-text="创建"
+             cancel-text="取消"
+    >
+        <view class="new-group-input">
+            <input cursor-spacing="20" type="text" placeholder="新组名称" focus="{{newGroupInput.visible}}" value="{{newGroupInput.value}}" bindinput='newGroupInputChange' bindconfirm="createNewGroup" />
+        </view>
+    </i-modal>
+
+    <i-action-sheet visible="{{ actionsVisible }}" actions="{{ actions }}" show-cancel bind:cancel="handleCancel1" bind:click="groupActionClick">
+        <view slot="header" class="header">
+            <text>组选项</text>
+            <view class="action" bindtap="revertGroupActions">完成</view>
+        </view>
+    </i-action-sheet>
+
+    <view class="modal" wx:if="{{renameGroupVisible}}">
+        <view class="wrap">
+            <view class="header">重命名</view>
+            <view class="content">
+                <input cursor-spacing="20" type="text" focus="true" placeholder="组名称" value="{{currentOperateGroup.name}}" bindinput='renameGroupInputChange' bindconfirm="renameGroup" data-value="{{currentOperateGroup.name}}"/>
+            </view>
+            <view class="footer">
+                <view class="cancel" bindtap="colseGroupRename">取消</view>
+                <view class="confirm" bindtap="renameGroup" data-value="{{currentOperateGroup.name}}">重命名</view>
+            </view>
+        </view>
+    </view>
+
+    <view class="group-lists-operate" wx:if="{{groupListsOperateVisible}}">
+        <view class="wrap">
+            <view class="header">
+                <view class="cancel" bindtap="colseGroupListsOperate">取消</view>
+                <view class="title">将列表添加到组</view>
+                <view class="jump">
+                    <block wx:if="{{util.isGroupListChange(currentOperateGroupList, originalOperateGroupList)}}"><text bindtap="colseGroupListsOperate">跳过</text></block>
+                    <block wx:else><text bindtap="confirmChangeGroupList">完成</text></block>
+                </view>
+            </view>
+
+            <view class="content">
+                <view class="group">
+                    <block wx:for="{{infos.lists}}" wx:key="id" wx:for-item="item">
+                        <view class="item" wx:if="{{item.gid !== 'group'}}">
+                            <i-icon type="other" size="24" fontWeight="bold" color="#3388ff"/>
+                            <view class="name">{{item.name}}</view>
+                            <block wx:if="{{util.hasGroupList(currentOperateGroupList, item.id)}}">
+                                <i-icon type="right" size="24" color="#3388ff" bindtap="removeGroupListNode" data-list="{{item}}"/>
+                            </block>
+                            <block wx:else>
+                                <i-icon type="add" size="24" color="#3388ff" bindtap="addGroupListNode" data-list="{{item}}"/>
+                            </block>
+                        </view>
+                    </block>
+                </view>
             </view>
         </view>
     </view>

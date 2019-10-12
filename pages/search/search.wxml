@@ -1,0 +1,50 @@
+<view class="container" style="height: calc(100vh - {{keyboardHeight}}px);">
+    <view class="header">
+        <view class="wrap">
+            <i-icon type="search" size="24" fontWeight="bold" color="#3388ff"/>
+            <input type="text" placeholder="搜索" focus="{{true}}" value="{{condition}}" bindinput="conditionChange" bindfocus="inputFocus" bindblur="inputBlur"/>
+            <text class="cancel" catchtap="goback">取消</text>
+        </view>
+    </view>
+
+    <view class="content">
+        <view class="empty" wx:if="{{records.length === 0}}" style="margin-top: {{keyboardHeight === 0 ? -15 : 0}}%;">
+            <image src="https://i.ibb.co/wcBCcTH/search.png" alt="" style="height: {{keyboardHeight === 0 ? 45 : 20}}vw; width: {{keyboardHeight === 0 ? 45 : 20}}vw;"> </image>
+            <text wx:if="{{condition === ''}}">你想查找什么内容？可在任务、步骤和笔记内搜索</text>
+            <text wx:else>已进行深度搜索, 但找不到你当前要查找的内容</text>
+        </view>
+
+        <view class="records" wx:else>
+            <block wx:for="{{records}}" wx:for-item="record" wx:for-index="idx">
+                <view class="item task" wx:if="{{record.type === 'task'}}" catchtap="goTaskPage" data-tid="{{record.value.id}}">
+                    <view class="checkbox" catchtap="toggleTaskSelect" data-task="{{record.value}}">
+                        <i-icon wx:if="{{record.value.state === 'finished'}}" type="success_fill" size="32" color="#3388ff" catchtap="toggleTaskSelect" data-task="{{record.value}}"/>
+                    </view>
+                    <view class="main">
+                        <text class="name">{{record.value.name}}</text>
+                        <block>
+                            <view class="subline">
+                                明天
+                            </view>
+                        </block>
+                    </view>
+                    <view class="important">
+                        <i-icon wx:if="{{record.value.important === false}}" type="collection" size="22" color="grey" bindtap="revertImportant" data-task="{{record.value}}"/>
+                        <i-icon wx:else type="collection_fill" size="22" color="#3388ff" bindtap="revertImportant" data-task="{{record.value}}" />
+                    </view>
+                </view>
+                <view class="item step" wx:else catchtap="goTaskPage" data-tid="{{record.task.id}}">
+                    <view class="checkbox" catchtap="toggleStepState" data-record="{{record}}">
+                        <i-icon wx:if="{{record.value.state === 'finished'}}" type="success_fill" size="32" color="#3388ff" catchtap="toggleStepState" data-record="{{record}}"/>
+                    </view>
+                    <view class="main">
+                        <text>{{record.value.value}}</text>
+                    </view>
+
+                </view>
+            </block>
+
+        </view>
+    </view>
+
+</view>
