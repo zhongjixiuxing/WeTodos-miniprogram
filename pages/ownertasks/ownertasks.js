@@ -1,5 +1,7 @@
 import store from '../../store';
 import create from '../../plugins/westore/utils/create';
+const {REQ_ACTION} = require('../../config/properties');
+const {uuid} = require('../../utils/util');
 
 const {getCurrentRouteUrl, fillNewTaskObj, getDateNo} = require('../../utils/util');
 
@@ -50,6 +52,11 @@ create(store,{
    * 生命周期函数--监听页面加载
    */
   onLoad: function (opts) {
+    this.setData({
+      userProfile: this.store.data.userProfile,
+      infos: this.store.data.infos
+    });
+
     const data = {};
     const listTheme = this.data.userProfile.ownerlessTasks.theme;
     const finishedTaskVisible = this.data.userProfile.ownerlessTasks.finishedTaskVisible;
@@ -177,15 +184,24 @@ create(store,{
     const value = e.detail.value.trim();
     if (value && value !== '') {
       const task = fillNewTaskObj({
-        id: Date.now(),
+        id: uuid(),
         name: e.detail.value,
         state: 'pending',
         important: false,
         lid: null,
       });
 
-      this.store.data.infos.tasks.push(task);
-      this.update();
+      const tasks = this.store.data.infos.tasks;
+      tasks.push(task);
+
+      this.setData({
+        ['infos.tasks']: tasks
+      });
+
+      app.globalData.events$.next({
+        event: REQ_ACTION.NEW_TASK,
+        data: task
+      });
     }
 
     this.revertCreateTaskInput();
@@ -211,19 +227,24 @@ create(store,{
   revertImportant(e) {
     const task = e.currentTarget.dataset.task;
     const tasks = this.store.data.infos.tasks;
+    let idx;
     for (let i=0; i<tasks.length; i++) {
       const t = tasks[i];
       if (t.id === task.id) {
         tasks[i].important = !t.important;
+        idx = i;
         break;
       }
     }
 
-    this.store.data.infos.tasks = tasks;
-    this.update();
     this.setData({
-      infos: this.store.data.infos
-    })
+      ['infos.tasks']: tasks
+    });
+
+    app.globalData.events$.next({
+      event: REQ_ACTION.UPDATE_TASK,
+      data: tasks[idx]
+    });
     this.refreshTasks();
   },
   revertState(e) {
@@ -235,10 +256,14 @@ create(store,{
       if (t.id === task.id) {
         task.state = task.state === 'pending' ? 'finished' : 'pending';
         tasks[i].state = task.state;
-        this.store.data.infos.tasks = tasks;
-        this.update();
+
         this.setData({
-          infos: this.store.data.infos
+          ['infos.tasks']: tasks
+        });
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
         });
 
         break;
@@ -256,7 +281,7 @@ create(store,{
 
   actionClick(e) {
     const action = this.data.actions[e.detail.index];
-    let actions;
+    let actions, userProfile;
 
     switch (action.name) {
       case '编辑':
@@ -277,41 +302,34 @@ create(store,{
         this.deleteList();
         break;
       case '显示完成的任务':
-        this.store.data.userProfile.ownerlessTasks.finishedTaskVisible = true;
-        this.update();
-
+      case '隐藏已完成任务':
+        userProfile = this.store.data.userProfile;
         actions = this.data.actions;
         for (let i=0; i<actions.length; i++) {
           if (actions[i].name === '显示完成的任务') {
             actions[i].name = '隐藏已完成任务';
+            userProfile.ownerlessTasks.finishedTaskVisible = true;
+            break;
+          } else if (actions[i].name === '隐藏已完成任务') {
+            actions[i].name = '显示完成的任务';
+            userProfile.ownerlessTasks.finishedTaskVisible = false;
             break;
           }
         }
 
         this.setData({
-          userProfile: this.store.data.userProfile,
+          userProfile: userProfile,
           actions
-        })
+        });
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_USER_PROFILE,
+          data: userProfile
+        });
         this.refreshTasks();
         break;
-      case '隐藏已完成任务':
-        this.store.data.userProfile.ownerlessTasks.finishedTaskVisible = false;
-        this.update();
-
-
-        actions = this.data.actions;
-        for (let i=0; i<actions.length; i++) {
-          if (actions[i].name === '隐藏已完成任务') {
-            actions[i].name = '显示完成的任务';
-            break;
-          }
-        }
-
-        this.setData({
-          userProfile: this.store.data.userProfile,
-          actions
-        })
-        this.refreshTasks();
+      default:
+        throw new Error('Unknown action: ' + action.name);
         break;
     }
   },
@@ -337,15 +355,19 @@ create(store,{
   updateTheme(e) {
     const type = this.data.themes.selected.type;
     const idx = e.currentTarget.dataset.idx
-    this.store.data.userProfile.ownerlessTasks.theme = {
+    const theme = {
       type,
       value: this.data.themes[`${type}s`][idx].value
-    };
-    this.update();
+    }
 
     this.setData({
       ['themes.selected.index']: idx,
-      ['userProfile.ownerlessTasks.theme']: this.store.data.userProfile.ownerlessTasks.theme
+      ['userProfile.ownerlessTasks.theme']: theme
+    });
+
+    app.globalData.events$.next({
+      event: REQ_ACTION.UPDATE_USER_PROFILE,
+      data: this.store.data.userProfile
     });
   },
   changeSelectThemeType(e) {
@@ -387,20 +409,6 @@ create(store,{
       groups,
     });
   },
-  deleteList() {
-    const lists = this.store.data.infos.lists;
-    for (let i=0; i<lists.length; i++) {
-      if (lists[i].id === this.data.list.id) {
-        lists.splice(i, 1);
-
-        this.store.data.infos.lists = lists;
-        this.update();
-        break;
-      }
-    }
-
-    this.goback();
-  },
   closeEditorPage() {
     this.setData({isEditorVisible: false});
   },
@@ -434,6 +442,8 @@ create(store,{
   deleteSelectedTasks() {
     const tasks = this.store.data.infos.tasks;
     const deleteTaskIds = this.data.selectedTasks;
+    const delTasks = [];
+
     for (let i=0; i<deleteTaskIds.length; i++) {
       let idx = -1;
       for (let k=0; k<tasks.length; k++) {
@@ -448,15 +458,21 @@ create(store,{
         continue;
       }
 
-      tasks.splice(idx, 1);
+      delTasks.push(tasks[idx]);
+      tasks.splice(idx, 1)
     }
 
-    this.store.data.infos.tasks = tasks;
-    this.update();
     this.setData({
-      infos: this.store.data.infos,
+      ['infos.tasks']: tasks,
       selectedTasks: [],
     });
+
+    for (let i=0; i<delTasks.length; i++) {
+      app.globalData.events$.next({
+        event: REQ_ACTION.DELETE_TASK,
+        data: delTasks[i]
+      });
+    }
 
     this.refreshTasks();
     this.closeEditorPage();
@@ -482,5 +498,34 @@ create(store,{
     wx.redirectTo({
       url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
     })
-  }
+  },
+  moveToList(e) {
+    const list = e.currentTarget.dataset.list;
+    const tasks = this.store.data.infos.tasks;
+    const taskIds = this.data.selectedTasks;
+    const updateTasks = [];
+
+    for (let k=0; k<tasks.length; k++) {
+      if (taskIds.includes(tasks[k].id)) {
+        tasks[k].lid = list.id;
+        updateTasks.push(tasks[k]);
+        break;
+      }
+    }
+
+    this.setData({
+      ['infos.tasks']: tasks,
+      selectedTasks: [],
+    });
+
+    updateTasks.forEach((t) => {
+      app.globalData.events$.next({
+        event: REQ_ACTION.UPDATE_TASK,
+        data: t
+      });
+    });
+
+    this.refreshTasks();
+    this.closeEditorPage();
+  },
 })

@@ -91,6 +91,14 @@ const fillNewTaskObj = (task) => {
     task.state = 'pending';
   }
 
+  if (!task.type) {
+    task.type = '';
+  }
+
+  if (!task.repeat) {
+    task.repeat = '';
+  }
+
   if (!task.important) {
     task.important = false;
   }

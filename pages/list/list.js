@@ -1,6 +1,8 @@
 import store from '../../store';
 import create from '../../plugins/westore/utils/create';
 const {getCurrentRouteUrl, fillNewTaskObj, getDateNo} = require('../../utils/util');
+const {REQ_ACTION} = require('../../config/properties');
+const {uuid} = require('../../utils/util');
 
 const app = getApp()
 
@@ -188,7 +190,6 @@ create(store,{
   },
 
   goback: function (e) {
-    console.log('goback------------------------ : ', e);
     wx.redirectTo({
       url: '/pages/home/home'
     })
@@ -199,7 +200,7 @@ create(store,{
     if (value && value !== '') {
       const newList = this.data.list;
       const task = fillNewTaskObj({
-        id: Date.now(),
+        id: uuid(),
         name: e.detail.value,
         state: 'pending',
         important: false,
@@ -210,8 +211,13 @@ create(store,{
         list: newList
       });
 
-      this.store.data.infos.tasks.push(task);
-      this.update();
+      const tasks = this.store.data.infos.tasks;
+      tasks.push(task);
+
+      app.globalData.events$.next({
+        event: REQ_ACTION.NEW_TASK,
+        data: task
+      });
 
       newList.taskCount += 1;
       this.updateListSync(newList);
@@ -230,6 +236,11 @@ create(store,{
         delete tempList.tasks; // delete tasks property
         this.store.data.infos.lists[i] = tempList;
         this.update();
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_LIST,
+          data: tempList
+        });
         return;
       }
     }
@@ -293,6 +304,11 @@ create(store,{
         this.setData({
           list: newList
         });
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: task
+        });
         break;
       }
     }
@@ -354,6 +370,11 @@ create(store,{
       ['list.name']: name,
       isUpdateListName: false,
     });
+
+    app.globalData.events$.next({
+      event: REQ_ACTION.UPDATE_LIST,
+      data: this.data.list
+    });
   },
   updateTheme(e) {
     const type = this.data.themes.selected.type;
@@ -362,6 +383,11 @@ create(store,{
       ['themes.selected.index']: idx,
       ['list.theme.value']: type === 'color' ? this.data.themes.colors[idx].value : this.data.themes.pictures[idx].value,
       ['list.theme.type']: this.data.themes.selected.type,
+    });
+
+    app.globalData.events$.next({
+      event: REQ_ACTION.UPDATE_LIST,
+      data: this.data.list
     });
   },
   changeSelectThemeType(e) {
@@ -415,10 +441,16 @@ create(store,{
     const lists = this.store.data.infos.lists;
     for (let i=0; i<lists.length; i++) {
       if (lists[i].id === this.data.list.id) {
-        lists.splice(i, 1);
+        const removeList = lists.splice(i, 1);
 
         this.store.data.infos.lists = lists;
         this.update();
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.DELETE_LIST,
+          data: removeList[0]
+        });
+
         break;
       }
     }

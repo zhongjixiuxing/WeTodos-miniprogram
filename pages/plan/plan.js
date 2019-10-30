@@ -2,6 +2,7 @@ import store from '../../store';
 import create from '../../plugins/westore/utils/create';
 
 const {getCurrentRouteUrl, fillNewTaskObj, getDateNo} = require('../../utils/util');
+const {REQ_ACTION} = require('../../config/properties');
 
 const app = getApp();
 
@@ -94,6 +95,11 @@ create(store,{
    * 生命周期函数--监听页面加载
    */
   onLoad: function (opts) {
+    this.setData({
+      userProfile: this.store.data.userProfile,
+      infos: this.store.data.infos
+    });
+
     // update theme configure
     const data = {};
     const listTheme = this.data.userProfile.planList.theme;
@@ -324,15 +330,20 @@ create(store,{
       const t = tasks[i];
       if (t.id === task.id) {
         tasks[i].important = !t.important;
+
+        this.setData({
+          ['infos.tasks']: tasks
+        });
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
+        });
         break;
       }
     }
 
-    this.store.data.infos.tasks = tasks;
-    this.update();
-    this.setData({
-      infos: this.store.data.infos
-    })
+    this.refreshTasks();
   },
   revertState(e) {
     const task = e.currentTarget.dataset.task;
@@ -343,15 +354,21 @@ create(store,{
       if (t.id === task.id) {
         task.state = task.state === 'pending' ? 'finished' : 'pending';
         tasks[i].state = task.state;
-        this.store.data.infos.tasks = tasks;
-        this.update();
+
         this.setData({
-          infos: this.store.data.infos
+          ['infos.tasks']: tasks
+        });
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
         });
 
         break;
       }
     }
+
+    this.refreshTasks();
   },
   handleCancel1(e) {
     this.setData({
@@ -361,7 +378,7 @@ create(store,{
 
   actionClick(e) {
     const action = this.data.actions[e.detail.index];
-    let actions;
+    let actions, userProfile;
 
     switch (action.name) {
       case '更改主题':
@@ -381,40 +398,35 @@ create(store,{
         break;
 
       case '显示完成的任务':
-        this.store.data.userProfile.planList.finishedTaskVisible = true;
-        this.update();
-
+      case '隐藏已完成任务':
+        userProfile = this.store.data.userProfile;
         actions = this.data.actions;
         for (let i=0; i<actions.length; i++) {
           if (actions[i].name === '显示完成的任务') {
             actions[i].name = '隐藏已完成任务';
+            userProfile.planList.finishedTaskVisible = true;
             break;
-          }
-        }
-
-        this.refreshTasks();
-        this.setData({
-          userProfile: this.store.data.userProfile,
-          actions
-        })
-        break;
-      case '隐藏已完成任务':
-        this.store.data.userProfile.planList.finishedTaskVisible = false;
-        this.update();
-
-        this.refreshTasks();
-        actions = this.data.actions;
-        for (let i=0; i<actions.length; i++) {
-          if (actions[i].name === '隐藏已完成任务') {
+          } else if (actions[i].name === '隐藏已完成任务') {
             actions[i].name = '显示完成的任务';
+            userProfile.planList.finishedTaskVisible = false;
             break;
           }
         }
 
         this.setData({
-          userProfile: this.store.data.userProfile,
+          userProfile: userProfile,
           actions
-        })
+        });
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_USER_PROFILE,
+          data: userProfile
+        });
+
+        this.refreshTasks();
+        break;
+      default:
+        throw new Error('Unknown action: ' + action.name);
         break;
     }
   },
@@ -441,7 +453,7 @@ create(store,{
   updateTheme(e) {
     const type = this.data.themes.selected.type;
     const idx = e.currentTarget.dataset.idx
-    this.store.data.userProfile.planList.theme = {
+    const theme = {
       type,
       value: this.data.themes[`${type}s`][idx].value
     };
@@ -449,7 +461,12 @@ create(store,{
     this.update();
     this.setData({
       ['themes.selected.index']: idx,
-      ['userProfile.planList.theme']: this.store.data.userProfile.planList.theme
+      ['userProfile.planList.theme']: theme
+    });
+
+    app.globalData.events$.next({
+      event: REQ_ACTION.UPDATE_USER_PROFILE,
+      data: this.store.data.userProfile
     });
   },
   changeSelectThemeType(e) {
@@ -475,20 +492,6 @@ create(store,{
     this.setData({
       isUpdateTheme: false,
     });
-  },
-  deleteList() {
-    const lists = this.store.data.infos.lists;
-    for (let i=0; i<lists.length; i++) {
-      if (lists[i].id === this.data.list.id) {
-        lists.splice(i, 1);
-
-        this.store.data.infos.lists = lists;
-        this.update();
-        break;
-      }
-    }
-
-    this.goback();
   },
   toggleTasksMoveDrawerVisible() {
     this.setData({
@@ -553,6 +556,8 @@ create(store,{
   deleteSelectedTasks() {
     const tasks = this.store.data.infos.tasks;
     const deleteTaskIds = this.data.selectedTasks;
+    const delTasks = [];
+
     for (let i=0; i<deleteTaskIds.length; i++) {
       let idx = -1;
       for (let k=0; k<tasks.length; k++) {
@@ -567,15 +572,21 @@ create(store,{
         continue;
       }
 
+      delTasks.push(tasks[idx]);
       tasks.splice(idx, 1);
     }
 
-    this.store.data.infos.tasks = tasks;
-    this.update();
     this.setData({
-      infos: this.store.data.infos,
+      ['infos.tasks']: tasks,
       selectedTasks: [],
     });
+
+    for (let i=0; i<delTasks.length; i++) {
+      app.globalData.events$.next({
+        event: REQ_ACTION.DELETE_TASK,
+        data: delTasks[i]
+      });
+    }
 
     this.refreshTasks();
     this.closeEditorPage();
@@ -612,19 +623,26 @@ create(store,{
     const list = e.currentTarget.dataset.list;
     const tasks = this.store.data.infos.tasks;
     const taskIds = this.data.selectedTasks;
+    const updateTasks = [];
 
     for (let k=0; k<tasks.length; k++) {
       if (taskIds.includes(tasks[k].id)) {
         tasks[k].lid = list.id;
+        updateTasks.push(tasks[k]);
         break;
       }
     }
 
-    this.store.data.infos.tasks = tasks;
-    this.update();
     this.setData({
-      infos: this.store.data.infos,
+      ['infos.tasks']: tasks,
       selectedTasks: [],
+    });
+
+    updateTasks.forEach((t) => {
+      app.globalData.events$.next({
+        event: REQ_ACTION.UPDATE_TASK,
+        data: t
+      });
     });
     this.closeEditorPage();
   },

@@ -1,6 +1,6 @@
 export default {
     data: {
-        userInfo: {},
+        user: {},
         hasUserInfo: false,
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
         logs: [],
@@ -9,7 +9,7 @@ export default {
             type: 'color',
             value: '#0099CC'
         },
-        userProfile: {
+        userProfile2: {
             importantList: {
                 theme: {
                     type: 'color', // enum, color/image
@@ -38,9 +38,13 @@ export default {
                 },
                 finishedTaskVisible: true,
             }
-
         },
+        userProfile: {},
         infos: {
+            lists: [],
+            tasks: []
+        },
+        infos2: {
             lists: [{
                 id: 'list-001',
                 gid: 'group-001', // group id, 如果不属于任何一个group, 将其标识为none

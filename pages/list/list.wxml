@@ -63,7 +63,7 @@
                 <text>重命名清单</text>
             </view>
             <view class="content">
-                <input type="text" placeholder="清单名称" focus="{{isUpdateListName}}" value="{{list.name}} ------ " bindconfirm="updateListName" bindblur="updateListName"/>
+                <input type="text" placeholder="清单名称" focus="{{isUpdateListName}}" value="{{list.name}}" bindconfirm="updateListName" bindblur="updateListName"/>
             </view>
         </view>
 <!--        <view class="updateTaskName" wx:elif="{{isInputNewListName}}">-->

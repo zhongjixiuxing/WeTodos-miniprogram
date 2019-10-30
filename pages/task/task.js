@@ -2,6 +2,7 @@ import create from '../../plugins/westore/utils/create';
 import store from "../../store";
 
 const {getDateNo} = require('../../utils/util');
+const {REQ_ACTION} = require('../../config/properties');
 
 //获取应用实例
 const app = getApp()
@@ -73,6 +74,11 @@ create(store,{
           task
         });
 
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: task
+        });
+
         break;
       }
     }
@@ -92,6 +98,11 @@ create(store,{
           task
         });
 
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
+        });
+
         break;
       }
     }
@@ -105,10 +116,16 @@ create(store,{
       if (t.id === task.id) {
         task.isMyday = !task.isMyday;
         tasks[i].isMyday = task.isMyday;
-        this.store.data.infos.tasks = tasks;
-        this.update();
         this.setData({
           task
+        });
+
+        this.store.data.infos.tasks = tasks;
+        this.update();
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
         });
 
         break;
@@ -155,6 +172,11 @@ create(store,{
         this.store.data.infos.tasks = tasks;
         this.update();
         this.setData({task});
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
+        });
         break;
       }
     }
@@ -171,6 +193,11 @@ create(store,{
         this.store.data.infos.tasks = tasks;
         this.update();
         this.setData({task});
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
+        });
         break;
       }
     }
@@ -199,6 +226,11 @@ create(store,{
         this.store.data.infos.tasks = tasks;
         this.update();
         this.setData({task, isAddStepInput: false});
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
+        });
         break;
       }
     }
@@ -208,7 +240,6 @@ create(store,{
     const idx = e.currentTarget.dataset.idx
     this.setData({
       updateStepIdx: -1,
-
     });
     if (newText === '') {
       return this.removeStep(e);
@@ -252,6 +283,12 @@ create(store,{
         const expireDayString = this.getFormatDate(task.expireDay);
 
         this.setData({task, expireDayString});
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
+        });
+
         break;
       }
     }
@@ -315,6 +352,11 @@ create(store,{
         this.store.data.infos.tasks = tasks;
         this.update();
         this.setData({task});
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_TASK,
+          data: tasks[i]
+        });
         break;
       }
     }
@@ -327,6 +369,12 @@ create(store,{
         tasks.splice(i, 1);
         this.store.data.infos.tasks = tasks;
         this.update();
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.DELETE_TASK,
+          data: task
+        });
+
         break;
       }
     }

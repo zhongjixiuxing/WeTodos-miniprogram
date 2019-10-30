@@ -5,6 +5,7 @@
     "i-swipeout": "../../iview-components/swipeout/index",
     "i-collapse": "./components/collapse/index",
     "i-collapse-item": "./components/collapse-item/index",
-    "i-action-sheet": "../list/action-sheet/index"
+    "i-action-sheet": "../list/action-sheet/index",
+    "auth": "../auth/auth"
   }
 }

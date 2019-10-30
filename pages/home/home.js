@@ -2,6 +2,7 @@ import store from '../../store';
 import create from '../../plugins/westore/utils/create';
 
 const {uuid} = require('../../utils/util');
+const {REQ_ACTION} = require('../../config/properties');
 
 const app = getApp();
 
@@ -113,7 +114,45 @@ create(store,{
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    this.authorize = this.selectComponent("#authorization");
+    this.authorize.isAuthorize('userInfo', (err, data) => {
+      if (err) {
+        throw new Error(err);
+      }
 
+      app.globalData.events$.next({
+        event: REQ_ACTION.WX_USER_PROFILE_UPDATE,
+        data
+      });
+      this.setData({userInfo: JSON.parse(data.rawData)});
+    });
+
+    // setTimeout(() => {
+    //   const infos = this.store.data.infos2;
+    //   for (let i=0; i<infos.lists.length; i++) {
+    //     const list = infos.lists[i];
+    //     if (list.gid !== 'group') {
+    //       app.globalData.events$.next({
+    //         event: REQ_ACTION.NEW_LIST,
+    //         data: list
+    //       });
+    //     } else {
+    //       app.globalData.events$.next({
+    //         event: REQ_ACTION.NEW_GROUP,
+    //         data: list
+    //       });
+    //     }
+    //   }
+    //
+    //   for (let i=0; i<infos.tasks.length; i++) {
+    //     const task = infos.tasks[i];
+    //     app.globalData.events$.next({
+    //       event: REQ_ACTION.NEW_TASK,
+    //       data: task
+    //     });
+    //   }
+    //
+    // }, 2000);
   },
 
   /**
@@ -174,10 +213,7 @@ create(store,{
   },
   createNewGroup(e) {
     const value = this.data.newGroupInput.value.trim();
-    if (!value || value === '') {
-      // nothing to do
-    } else {
-      // TODO 先请求GraphQL 接口生产
+    if (value && value !== '') {
       const group = {
         id: uuid(),
         gid: 'group',
@@ -185,14 +221,15 @@ create(store,{
         createdAt: new Date().toISOString(),
       };
 
-
-      this.store.data.infos.lists.push(group);
-      this.store.data.infos = JSON.parse(JSON.stringify(this.store.data.infos));
+      this.data.infos.lists.push(group);
       this.setData({
-        infos: this.store.data.infos
+        infos: this.data.infos,
       });
 
-      this.update();
+      app.globalData.events$.next({
+        event: REQ_ACTION.NEW_GROUP,
+        data: group
+      });
     }
 
     // hidden input modal
@@ -234,6 +271,10 @@ create(store,{
     this.store.data.infos.lists = lists;
     this.update();
 
+    app.globalData.events$.next({
+      event: REQ_ACTION.NEW_LIST,
+      data: list
+    });
 
     wx.redirectTo({
       url: `/pages/list/list?lid=${list.id}&isNew=true`
@@ -248,12 +289,14 @@ create(store,{
           if (lists[i].id === list.id) {
             lists.splice(i, 1);
 
-            this.store.data.infos.lists = lists;
-            this.update();
-
             this.setData({
               ['infos.lists']: lists
-            })
+            });
+
+            app.globalData.events$.next({
+              event: REQ_ACTION.DELETE_LIST,
+              data: list
+            });
             break;
           }
         }
@@ -313,20 +356,32 @@ create(store,{
 
       case 2: // delete group
         lists = this.store.data.infos.lists;
-        let group;
+        let group, idx;
         for (let i=0; i<lists.length; i++) {
           if (lists[i].id === this.data.currentOperateGroup.id) {
             group = lists[i];
-            lists.splice(i, 1);
+            idx = i;
+          } else {
+            if (lists[i].gid === this.data.currentOperateGroup.id) {
+              lists[i].gid = 'none';
+              app.globalData.events$.next({
+                event: REQ_ACTION.UPDATE_LIST,
+                data: lists[i]
+              });
+            }
           }
         }
+        lists.splice(idx, 1);
 
         if (group) {
-          this.store.data.infos.lists = lists;
-          this.update();
           this.setData({
             ['infos.lists']: lists,
             actionsVisible: false,
+          });
+
+          app.globalData.events$.next({
+            event: REQ_ACTION.DELETE_GROUP,
+            data: group
           });
         }
 
@@ -352,11 +407,14 @@ create(store,{
     for (let i=0; i<lists.length; i++) {
       if (lists[i].id === this.data.currentOperateGroup.id) {
         lists[i].name = this.data.currentOperateGroup.name;
-        this.store.data.infos.lists = lists;
-        this.update();
 
         this.setData({
-          infos: this.store.data.infos
+          ['infos.lists']: lists
+        });
+
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_GROUP,
+          data: lists[i]
         });
       }
     }
@@ -398,12 +456,22 @@ create(store,{
 
     const lists = this.store.data.infos.lists;
     for (let i=0; i<lists.length; i++) {
+      let changeList = null;
       if (removeLists.includes(lists[i].id)) {
         lists[i].gid = 'none';
+        changeList = lists[i];
       }
 
       if (newLists.includes(lists[i].id)) {
         lists[i].gid = this.data.currentOperateGroup.id;
+        changeList = lists[i];
+      }
+
+      if (changeList) {
+        app.globalData.events$.next({
+          event: REQ_ACTION.UPDATE_LIST,
+          data: changeList
+        });
       }
     }
 

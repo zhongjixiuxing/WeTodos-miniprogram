@@ -11,6 +11,7 @@
 
     <view class="content">
         <view class="top">
+            <auth id='authorization'></auth>
             <view class="list">
                 <view class="item" bindtap="redirectPage" data-page="myday">
                     <view class="wrap">
