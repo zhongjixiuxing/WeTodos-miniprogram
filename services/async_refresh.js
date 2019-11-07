@@ -206,7 +206,19 @@ module.exports = class AsyncRefresh {
                 this.store();
                 break;
             case AsyncRefresh.ACTION.UPDATE_USER_PROFILE:
-                this._cache.push(action);
+                for (let i=0; i<this._cache.length; i++) {
+                    const a = this._cache[i];
+                    if (a.type !== AsyncRefresh.ACTION.UPDATE_USER_PROFILE) {
+                        continue;
+                    }
+
+                    this._cache[i] = action;
+                    isExist = true;
+                    break;
+                }
+                if (!isExist) {
+                    this._cache.push(action);
+                }
                 this.store();
                 break;
             default:

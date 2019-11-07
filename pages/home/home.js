@@ -109,7 +109,7 @@ create(store,{
    */
   onReady: function () {
     const userProfile = this.store.data.userProfile;
-    if (!this.data.userInfo && userProfile && userProfile.wxUserInfo
+    if (userProfile && userProfile.wxUserInfo
       && Object.keys(userProfile.wxUserInfo).length > 0
     ) {
       this.store.data.userInfo = userProfile.wxUserInfo;
