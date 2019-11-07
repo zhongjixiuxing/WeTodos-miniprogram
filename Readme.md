@@ -12,7 +12,7 @@
    
 ## 小程序参考资料
    * 权限授权处理：[土家胖哥](https://juejin.im/post/5cfa0013e51d4558936aa047)   
-   
+   * 白嫖图床: [聚合图床](https://www.superbed.cn/)
 
 ## 遇到的问题
    * dynamodb error: Invalid attribute value type   

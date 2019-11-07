@@ -3,6 +3,63 @@ page {
   padding: 0;
 }
 
+.login-alert{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, .4);
+  z-index: 99;
+
+  .wrap{
+    width: 85%;
+    border-radius: 8px;
+    background-color: white;
+    .header{
+      padding: 8px;
+      border-bottom: 1px solid gainsboro;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .content{
+      padding: 30px 12px;
+      font-size: 14px;
+      color: slategray;
+    }
+
+    .footer{
+      border-top: 1px solid gainsboro;
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 12px;
+      font-size: 12px;
+
+      .btn{
+        border: 1px solid #3388ff;
+        padding: 5px 12px;
+        border-radius: 18px;
+      }
+
+      button{
+        font-size: 12px !important;
+        color: white;
+        background-color: #3388ff;
+        margin-right: 0;
+        border-radius: 18px;
+      }
+
+      .no-login{
+        color: #3388ff;
+      }
+    }
+  }
+}
+
 .container {
   padding: 0;
   height: 100%;
@@ -19,19 +76,57 @@ page {
      display: flex;
      flex-direction: row;
      align-items: center;
-     justify-content: center;
+     justify-content: start;
      position: relative;
+
 
      .userinfo-avatar {
        width: 70rpx;
        height: 70rpx;
        border-radius: 50%;
+       margin-left: 2%;
      }
 
      .userinfo-nickname {
        width: 75%;
        position: relative;
        padding-left: 10px;
+     }
+
+     button{
+       font-size: 14px;
+       background-color: unset;
+       margin-left: 0;
+       color: #647c90;
+       font-weight: bold;
+     }
+
+     button:after{
+       border: unset;
+     }
+
+     .click-login{
+       color: #576b95;
+     }
+
+     .offline{
+       width: 40rpx;
+       height: 40rpx;
+
+       //animation:offline 1s infinite;
+       animation: offline 1.5s linear 2s infinite alternate;
+     }
+
+     @keyframes offline
+     {
+       from {
+         transform: scale(1);
+         opacity: 1;
+       }
+       to {
+         transform: scale(0.4);
+         opacity: 0.1;
+       }
      }
    }
  }

@@ -406,21 +406,21 @@ export default {
             }],
 
             pictures: [{
-                value: 'https://i.ibb.co/JKm36cW/forest-4507031-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/H183e5c6ddf524788b3bc8dfc57e72234v.jpg',
             },{
-                value: 'https://i.ibb.co/5RGDxSR/fox-4505465-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/Hf2dd2c35e1034bb1a82f31898f47bbc5Y.jpg',
             },{
-                value: 'https://i.ibb.co/Z1DMkbh/landscape-4487659-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/Hbf27beef9fb74e79b0e1068daac8f77el.jpg',
             },{
-                value: 'https://i.ibb.co/kcXM24z/milky-way-4416194-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/H51859b00659147feaa290e28f9bde9b1n.jpg',
             },{
-                value: 'https://i.ibb.co/b2c6x4T/milky-way-4484593-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/H46a7e3f153e64d5581dcc444c5ddfcacA.jpg',
             },{
-                value: 'https://i.ibb.co/k468VM6/milky-way-4500469-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/H88fe703c4ece4a3dbf0c6cc601c57257W.jpg',
             },{
-                value: 'https://i.ibb.co/bP6wgtN/moon-4498253-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/He707f5b7d3d74900b8df8cbc988ecfa9O.jpg',
             },{
-                value: 'https://i.ibb.co/BybNqBw/sailing-boat-4060710-640.jpg',
+                value: 'https://ae01.alicdn.com/kf/H08a47abb149c46c5b6bfb2a2b14bf991X.jpg',
             }]
         },
     },

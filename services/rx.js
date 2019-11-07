@@ -32,6 +32,14 @@ module.exports = (events$, app) => {
                 case REQ_ACTION.WX_USER_PROFILE_UPDATE:
                     const profile = JSON.parse(data.data.rawData);
                     app.globalData.userInfo = profile;
+                    store.data.userProfile.wxUserInfo = profile;
+                    if (store.data.userProfile && Object.keys(store.data.userProfile).length > 1) {
+                        events$.next({
+                            event: REQ_ACTION.UPDATE_USER_PROFILE,
+                            data: store.data.userProfile
+                        });
+                    }
+
                     break;
 
                 case REQ_ACTION.SYNC_TASKS:
@@ -152,6 +160,9 @@ module.exports = (events$, app) => {
                     store.data.user = Object.assign(store.data.user, data.data);
                     delete store.data.user.profile;
                     store.data.userProfile = data.data.profile;
+                    if (data.data.profile.wxUserInfo && Object.keys(data.data.profile.wxUserInfo).length !== 0) {
+                        store.data.userInfo = data.data.profile.wxUserInfo;
+                    }
                     wx.setStorageSync('user', store.data.user);
                     wx.setStorageSync('userProfile', store.data.userProfile);
 

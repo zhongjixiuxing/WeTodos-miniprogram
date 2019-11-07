@@ -4,7 +4,7 @@
             <view class='txt'></view>
             <view class='title'>微信授权</view>
         <!--<view class='txt' bindtap='popClose'>关闭</view> -->
-            <view class='txt'>关闭</view>
+            <view class='txt' bindtap='popClose'>关闭</view>
         </view>
         <view class='center'>
             <view class='explain'><text>WeTodos申请获得以下权限：</text></view>
@@ -17,3 +17,24 @@
         <button wx:else class="bottom" open-type="getUserInfo" bindgetuserinfo="getAuthorizeTool">授权</button>
     </view>
 </view>
+
+
+<!--<view class='box' catchtouchmove='true' wx:if='{{popShow}}'>-->
+<!--    <view class='pop'>-->
+<!--        <view class='top'>-->
+<!--            <view class='txt'></view>-->
+<!--            <view class='title'>微信授权</view>-->
+<!--            &lt;!&ndash;<view class='txt' bindtap='popClose'>关闭</view> &ndash;&gt;-->
+<!--            <view class='txt' bindtap='popClose'>关闭</view>-->
+<!--        </view>-->
+<!--        <view class='center'>-->
+<!--            <view class='explain'><text>WeTodos申请获得以下权限：</text></view>-->
+<!--            <view class='tip'>-->
+<!--                <view class='dian'></view>-->
+<!--                <text>同意此应用访问你的{{authTxt}}功能</text>-->
+<!--            </view>-->
+<!--        </view>-->
+<!--        <button wx:if="{{authType !== 'userInfo'}}" class='bottom' open-type="openSetting" bindopensetting="getAuthorizeTool">允许</button>-->
+<!--        <button wx:else class="bottom" open-type="getUserInfo" bindgetuserinfo="getAuthorizeTool">授权</button>-->
+<!--    </view>-->
+<!--</view>-->

@@ -2,6 +2,49 @@ page {
   height: 100%;
   padding: 0; }
 
+.login-alert {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99; }
+  .login-alert .wrap {
+    width: 85%;
+    border-radius: 8px;
+    background-color: white; }
+    .login-alert .wrap .header {
+      padding: 8px;
+      border-bottom: 1px solid gainsboro;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold; }
+    .login-alert .wrap .content {
+      padding: 30px 12px;
+      font-size: 14px;
+      color: slategray; }
+    .login-alert .wrap .footer {
+      border-top: 1px solid gainsboro;
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 12px;
+      font-size: 12px; }
+      .login-alert .wrap .footer .btn {
+        border: 1px solid #3388ff;
+        padding: 5px 12px;
+        border-radius: 18px; }
+      .login-alert .wrap .footer button {
+        font-size: 12px !important;
+        color: white;
+        background-color: #3388ff;
+        margin-right: 0;
+        border-radius: 18px; }
+      .login-alert .wrap .footer .no-login {
+        color: #3388ff; }
+
 .container {
   padding: 0;
   height: 100%;
@@ -17,16 +60,38 @@ page {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
+      justify-content: start;
       position: relative; }
       .container .header .header-wrap .userinfo-avatar {
         width: 70rpx;
         height: 70rpx;
-        border-radius: 50%; }
+        border-radius: 50%;
+        margin-left: 2%; }
       .container .header .header-wrap .userinfo-nickname {
         width: 75%;
         position: relative;
         padding-left: 10px; }
+      .container .header .header-wrap button {
+        font-size: 14px;
+        background-color: unset;
+        margin-left: 0;
+        color: #647c90;
+        font-weight: bold; }
+      .container .header .header-wrap button:after {
+        border: unset; }
+      .container .header .header-wrap .click-login {
+        color: #576b95; }
+      .container .header .header-wrap .offline {
+        width: 40rpx;
+        height: 40rpx;
+        animation: offline 1.5s linear 2s infinite alternate; }
+@keyframes offline {
+  from {
+    transform: scale(1);
+    opacity: 1; }
+  to {
+    transform: scale(0.4);
+    opacity: 0.1; } }
   .container .content {
     width: 100%;
     height: 100%;

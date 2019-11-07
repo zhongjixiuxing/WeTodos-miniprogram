@@ -1,11 +1,36 @@
 <wxs module="util" src="./util.wxs"></wxs>
 
+<view class="login-alert" wx:if="{{showLoginAlert}}">
+    <view class="wrap">
+        <view class="header">
+            <text>你还未登录</text>
+        </view>
+        <view class="content">
+            <view class="item">* 登陆后能够同步、存储记录到后台</view>
+            <view class="item">* 暂不登陆将会是离线模式存储数据</view>
+        </view>
+        <view class="footer">
+            <view class="btn no-login" catchtap="useOfflineMode">暂不登录</view>
+<!--            <view class="btn login" catchtap="openLoginAuth" open-type="getUserInfo" bindgetuserinfo="openLoginAuth">立即登录</view>-->
+            <button class="btn login" class="bottom" open-type="getUserInfo" bindgetuserinfo="openLoginAuth">立即登录</button>
+        </view>
+    </view>
+</view>
+
 <view class="container" wx:if="{{infos}}">
     <view class="header">
         <view class="header-wrap">
-            <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-            <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-            <i-icon type="search" size="24" color="#38f" fontWeight="bold" bindtap="redirectPage" data-page="search"/>
+            <block wx:if="{{userInfo}}">
+                <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+                <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+                <i-icon type="search" size="24" color="#38f" fontWeight="bold" bindtap="redirectPage" data-page="search"/>
+            </block>
+            <block wx:else>
+                <image class="userinfo-avatar" src="https://i.ibb.co/8B4wG7h/user.png" mode="cover"></image>
+<!--                <text class="userinfo-nickname click-login" catchtap="openLoginAuth">点击登录</text>-->
+                <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="openLoginAuth">立即登录</button>
+                <image class="offline" src="https://i.ibb.co/jLyYvZL/Off-line.png" alt="Off-line" mode="cover"></image>
+            </block>
         </view>
     </view>
 

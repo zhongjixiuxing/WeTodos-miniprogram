@@ -28,6 +28,7 @@ create(store,{
    * 页面的初始数据
    */
   data: {
+    showLoginAlert: false,
     userInfo: null,
     hasUserInfo: false,
     actionsVisible: false,
@@ -81,51 +82,66 @@ create(store,{
    * 生命周期函数--监听页面加载
    */
   onLoad: function () {
-    if (app.globalData.userInfo) {
-      this.store.data.userInfo = app.globalData.userInfo;
-      this.store.data.hasUserInfo = true;
-      this.update()
-    } else if (this.data.canIUse) {
-      app.userInfoReadyCallback = res => {
-        this.store.data.userInfo = res.userInfo;
-        this.store.data.hasUserInfo = true;
-        this.update()
-      }
-    } else {
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
-          this.store.data.userInfo = res.userInfo
-          this.store.data.hasUserInfo = true
-          this.update()
-        }
-      })
-    }
-  },
-  getUserInfo: function (e) {
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
+    // if (app.globalData.userInfo) {
+    //   this.store.data.userInfo = app.globalData.userInfo;
+    //   this.store.data.hasUserInfo = true;
+    //   this.update()
+    // } else if (this.data.canIUse) {
+    //   app.userInfoReadyCallback = res => {
+    //     this.store.data.userInfo = res.userInfo;
+    //     this.store.data.hasUserInfo = true;
+    //     this.update()
+    //   }
+    // } else {
+    //   wx.getUserInfo({
+    //     success: res => {
+    //       app.globalData.userInfo = res.userInfo
+    //       this.store.data.userInfo = res.userInfo
+    //       this.store.data.hasUserInfo = true
+    //       this.update()
+    //     }
+    //   })
+    // }
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    this.authorize = this.selectComponent("#authorization");
-    this.authorize.isAuthorize('userInfo', (err, data) => {
-      if (err) {
-        throw new Error(err);
-      }
-
-      app.globalData.events$.next({
-        event: REQ_ACTION.WX_USER_PROFILE_UPDATE,
-        data
+    const userProfile = this.store.data.userProfile;
+    if (!this.data.userInfo && userProfile && userProfile.wxUserInfo
+      && Object.keys(userProfile.wxUserInfo).length > 0
+    ) {
+      this.store.data.userInfo = userProfile.wxUserInfo;
+      this.update();
+      this.setData({
+        userInfo: userProfile.wxUserInfo
       });
-      this.setData({userInfo: JSON.parse(data.rawData)});
-    });
+    } else {
+      this.monitorUserInfo();
+    }
+
+    // setTimeout(() => {
+    //   const userProfile = this.store.data.userProfile;
+    //   delete userProfile.wxUserInfo
+    //   app.globalData.events$.next({
+    //     event: REQ_ACTION.UPDATE_USER_PROFILE,
+    //     data: userProfile
+    //   });
+    // }, 3000);
+
+    // this.authorize = this.selectComponent("#authorization");
+    // this.authorize.isAuthorize('userInfo', (err, data) => {
+    //   if (err) {
+    //     throw new Error(err);
+    //   }
+    //
+    //   app.globalData.events$.next({
+    //     event: REQ_ACTION.WX_USER_PROFILE_UPDATE,
+    //     data
+    //   });
+    //   this.setData({userInfo: JSON.parse(data.rawData)});
+    // });
 
     // setTimeout(() => {
     //   const infos = this.store.data.infos2;
@@ -155,6 +171,50 @@ create(store,{
     // }, 2000);
   },
 
+  monitorUserInfo() {
+    let user = wx.getStorageSync('user') || null;
+    if (user) {
+      this.getUserInfo();
+    } else {
+      setTimeout(() => {
+        user = wx.getStorageSync('user') || null;
+        if (!user) {
+          return this.monitorUserInfo();
+        }
+
+        if (!this.store.data.userInfo || Object.keys(this.store.data.userInfo).length === 0) {
+          this.getUserInfo();
+        }
+      }, 1000);
+    }
+  },
+
+  getUserInfo() {
+    wx.getSetting({
+      success: async (res) => {
+        if (!res.authSetting['scope.userInfo']) {
+          this.setData({
+            showLoginAlert: true
+          });
+        } else {
+          wx.getUserInfo({
+            success: res => {
+              app.globalData.events$.next({
+                event: REQ_ACTION.WX_USER_PROFILE_UPDATE,
+                data: {
+                  ...res
+                }
+              });
+
+              this.setData({
+                userInfo: res.userInfo
+              });
+            }
+          });
+        }
+      }
+    });
+  },
   /**
    * 生命周期函数--监听页面显示
    */
@@ -486,6 +546,29 @@ create(store,{
     const page = e.currentTarget.dataset.page;
     wx.redirectTo({
       url: `/pages/${page}/${page}`
+    });
+  },
+  useOfflineMode() {
+    this.setData({
+      showLoginAlert: false,
+    });
+  },
+  openLoginAuth(res) {
+    if (res.detail.errMsg !== 'getUserInfo:ok') {
+      console.error('getUserInfo failed: ', res);
+      return;
+    }
+
+    app.globalData.events$.next({
+      event: REQ_ACTION.WX_USER_PROFILE_UPDATE,
+      data: {
+        ...res.detail
+      }
+    });
+
+    this.setData({
+      userInfo: res.detail.userInfo,
+      showLoginAlert: false
     });
   }
 })
