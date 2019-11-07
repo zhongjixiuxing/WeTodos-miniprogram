@@ -9,7 +9,7 @@
 
     <view class="content">
         <view class="empty" wx:if="{{records.length === 0}}" style="margin-top: {{keyboardHeight === 0 ? -15 : 0}}%;">
-            <image src="https://i.ibb.co/wcBCcTH/search.png" alt="" style="height: {{keyboardHeight === 0 ? 45 : 20}}vw; width: {{keyboardHeight === 0 ? 45 : 20}}vw;"> </image>
+            <image src="https://ae01.alicdn.com/kf/H9a3485635bd146a1bd11dec3605eec32Q.png" alt="" style="height: {{keyboardHeight === 0 ? 45 : 20}}vw; width: {{keyboardHeight === 0 ? 45 : 20}}vw;"> </image>
             <text wx:if="{{condition === ''}}">你想查找什么内容？可在任务、步骤和笔记内搜索</text>
             <text wx:else>已进行深度搜索, 但找不到你当前要查找的内容</text>
         </view>

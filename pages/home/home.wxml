@@ -26,10 +26,10 @@
                 <i-icon type="search" size="24" color="#38f" fontWeight="bold" bindtap="redirectPage" data-page="search"/>
             </block>
             <block wx:else>
-                <image class="userinfo-avatar" src="https://i.ibb.co/8B4wG7h/user.png" mode="cover"></image>
+                <image class="userinfo-avatar" src="https://ae01.alicdn.com/kf/H0b2a7811820d48abb8c93d9d5364ac8de.png" mode="cover"></image>
 <!--                <text class="userinfo-nickname click-login" catchtap="openLoginAuth">点击登录</text>-->
                 <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="openLoginAuth">立即登录</button>
-                <image class="offline" src="https://i.ibb.co/jLyYvZL/Off-line.png" alt="Off-line" mode="cover"></image>
+                <image class="offline" src="https://ae01.alicdn.com/kf/H925fe80662aa4f59bb409a79ac60e484o.png" alt="Off-line" mode="cover"></image>
             </block>
         </view>
     </view>
