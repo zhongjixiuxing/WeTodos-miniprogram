@@ -254,8 +254,14 @@ module.exports = class AsyncRefresh {
                 this.store();
             }
 
-            await this.syncAction(action);
-            wx.removeStorageSync(this.currentSyncAction);
+            try {
+                await this.syncAction(action);
+                wx.removeStorageSync(this.currentSyncAction);
+            } catch (e) {
+                console.error('Sync actions to remote error: ', e);
+                this.isSynching = false;
+                break;
+            }
         }
     }
 
