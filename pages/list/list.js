@@ -280,10 +280,13 @@ create(store,{
         const tasks = this.store.data.infos.tasks;
         for (let k=0; k<tasks.length; k++) {
           if (tasks[k].id === task.id) {
-            tasks[k].important = task.important;
-            this.store.data.infos.tasks = tasks;
-
+            this.store.data.infos.tasks[k].important = task.important;
             this.update();
+
+            app.globalData.events$.next({
+              event: REQ_ACTION.UPDATE_TASK,
+              data: this.store.data.infos.tasks[k]
+            });
             break;
           }
         }
