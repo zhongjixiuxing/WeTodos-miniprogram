@@ -311,10 +311,19 @@ create(store,{
           list: newList
         });
 
-        app.globalData.events$.next({
-          event: REQ_ACTION.UPDATE_TASK,
-          data: task
-        });
+        const tasks = this.store.data.infos.tasks;
+        for (let k=0; k<tasks.length; k++) {
+          if (tasks[k].id === task.id) {
+            this.store.data.infos.tasks[k] = task;
+            this.update();
+
+            app.globalData.events$.next({
+              event: REQ_ACTION.UPDATE_TASK,
+              data: task
+            });
+            break;
+          }
+        }
 
         if (task.state === 'finished') {
           app.globalData.events$.next({
