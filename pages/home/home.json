@@ -7,5 +7,6 @@
     "i-collapse-item": "./components/collapse-item/index",
     "i-action-sheet": "../list/action-sheet/index",
     "auth": "../auth/auth"
-  }
+  },
+  "disableScroll": true
 }

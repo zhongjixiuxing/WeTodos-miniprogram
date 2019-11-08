@@ -194,10 +194,21 @@ page {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            .title {
-              width: 100%;
-              padding-left: 10px;
-              font-size: 16px;
+
+            .left{
+              display: flex;
+              flex-direction: row;
+              align-content: center;
+              align-items: center;
+              width: 93%;
+              .title {
+                width: 100%;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                padding-left: 10px;
+                font-size: 16px;
+              }
             }
           }
         }

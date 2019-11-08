@@ -364,6 +364,13 @@ create(store,{
           data: tasks[i]
         });
 
+        if (task.state === 'finished') {
+          app.globalData.events$.next({
+            event: REQ_ACTION.PLAY_SOUND,
+            data: {}
+          });
+        }
+
         break;
       }
     }

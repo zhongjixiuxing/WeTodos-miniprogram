@@ -62,7 +62,10 @@ create(store,{
     groups: [],
     currentGroup: null,
     themes: null,
-    todayNo: getDateNo()
+    todayNo: getDateNo(),
+    newListInput: {
+      name: '',
+    }
   },
 
   /**
@@ -312,6 +315,14 @@ create(store,{
           event: REQ_ACTION.UPDATE_TASK,
           data: task
         });
+
+        if (task.state === 'finished') {
+          app.globalData.events$.next({
+            event: REQ_ACTION.PLAY_SOUND,
+            data: {}
+          });
+        }
+
         break;
       }
     }
@@ -464,5 +475,29 @@ create(store,{
     wx.redirectTo({
       url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
     })
+  },
+  updateNewListName(e) {
+    const value = this.data.list.name.trim();
+    if (value && value !== '') {
+      this.setData({
+        isInputNewListName: false,
+        ['list.name']: value,
+        isUpdateListName: false,
+      });
+
+      app.globalData.events$.next({
+        event: REQ_ACTION.UPDATE_LIST,
+        data: this.data.list
+      });
+    }
+  },
+  newListNameInputUpdate(e) {
+    const value = e.detail.value.trim();
+    if (value && value !== '') {
+      this.setData({
+        ['list.name']: value,
+      });
+
+    }
   }
 })

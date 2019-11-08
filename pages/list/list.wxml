@@ -8,7 +8,7 @@
                 <text>清单</text>
             </view>
             <view class="name">
-                <text>{{list.name}}</text>
+                <span>{{list.name}}</span>
             </view>
             <view class="right">
                 <i-icon type="more" size="24" fontWeight="bold" color="white" catchtap="revertActions"/>
@@ -143,13 +143,19 @@
         </view>
     </i-action-sheet>
 
-    <view class="modal" wx:if="{{isInputNewListName}}">
-        <view class="wrap">
-            <view class="header">新列表命名</view>
-            <view class="content">
-                <input type="text" focus="{{isInputNewListName}}" placeholder="列表名称" bindconfirm="updateListName" data-value="{{list.name}}"/>
+    <block wx:if="{{isInputNewListName}}">
+        <i-modal title="新列表命名"
+                 visible="{{ isInputNewListName }}"
+                 bind:ok="updateNewListName"
+                 bind:cancel="deleteList"
+                 ok-text="确定"
+                 cancel-text="取消"
+        >
+            <view class="new-group-input" >
+                <textarea wx:if="{{ isInputNewListName }}" auto-height="{{true}}" cursor-spacing="120" value="{{list.name}}" placeholder="列表名称" auto-focus="{{true}}" focus="{{true}}" bindinput='newListNameInputUpdate' bindconfirm="updateNewListName" />
+<!--                <input cursor-spacing="120" type="text" placeholder="列表名称" focus="{{isInputNewListName}}" value="{{list.name}}" bindinput='newListNameInputUpdate' bindconfirm="updateNewListName"/>-->
             </view>
-        </view>
-    </view>
+        </i-modal>
+    </block>
 
 </view>

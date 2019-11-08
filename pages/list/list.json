@@ -3,6 +3,8 @@
     "i-icon": "../../iview-components/icon/index",
     "i-action-sheet": "./action-sheet/index",
     "i-input": "../../iview-components/input/index",
-    "i-radio": "../../iview-components/radio/index"
-  }
+    "i-radio": "../../iview-components/radio/index",
+    "i-modal": "../../iview-components/modal/index"
+  },
+  "disableScroll": true
 }

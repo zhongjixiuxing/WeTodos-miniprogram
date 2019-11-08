@@ -22,6 +22,7 @@ const REQ_ACTION = Object.freeze({
     SYNC_TASKS_AGAIN: 'sync_tasks_again',
     SYNC_TASKS_FINISHED: 'sync_tasks_finished',
     SYNC: 'sync', // sync actions to remote graphql server
+    PLAY_SOUND: 'play_sound'
 });
 
 module.exports = {

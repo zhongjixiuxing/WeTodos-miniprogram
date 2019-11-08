@@ -79,6 +79,13 @@ create(store,{
           data: task
         });
 
+        if (task.state === 'finished') {
+          app.globalData.events$.next({
+            event: REQ_ACTION.PLAY_SOUND,
+            data: {}
+          });
+        }
+
         break;
       }
     }
@@ -177,6 +184,14 @@ create(store,{
           event: REQ_ACTION.UPDATE_TASK,
           data: tasks[i]
         });
+
+        if (task.steps[idx].state === 'finished') {
+          app.globalData.events$.next({
+            event: REQ_ACTION.PLAY_SOUND,
+            data: {}
+          });
+        }
+
         break;
       }
     }

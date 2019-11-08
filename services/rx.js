@@ -5,6 +5,14 @@ const {REQ_ACTION} = require('../config/properties');
 const {publicClient,authClient} = require('../services/apollo');
 const store = require('../store').default;
 const AsyncRefresh = require('./async_refresh');
+const innerAudioContext = wx.createInnerAudioContext()
+innerAudioContext.autoplay = true
+innerAudioContext.onPlay(() => {});
+
+innerAudioContext.onError((res) => {
+    console.log(res.errMsg);
+    console.log(res.errCode);
+});
 
 module.exports = (events$, app) => {
     const asyncRefreshClient = new AsyncRefresh(app);
@@ -12,6 +20,15 @@ module.exports = (events$, app) => {
     const events$$ = events$.subscribe(
         (data) => {
             switch (data.event) {
+                case REQ_ACTION.PLAY_SOUND:
+                    if (innerAudioContext.src.length === 0) {
+                        innerAudioContext.src = 'http://file.52lishi.com/file/yinxiao/lyq1712281.mp3';
+                    }
+                    innerAudioContext.stop();
+                    innerAudioContext.seek(0);
+                    innerAudioContext.play();
+
+                    break;
                 case REQ_ACTION.NEW_GROUP:
                 case REQ_ACTION.UPDATE_GROUP:
                 case REQ_ACTION.DELETE_GROUP:

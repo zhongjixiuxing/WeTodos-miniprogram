@@ -98,8 +98,10 @@
                         <i-swipeout actions="{{swipeActions}}" bind:change="listActionClick" data-list="{{item}}">
                             <view slot="content" class="item" bindtap='goListPage' data-list="{{item}}">
                                 <view class="item-wrap">
-                                    <i-icon type="other" size="24" fontWeight="bold" color="{{item.theme.type === 'color' ? item.theme.value : '#0099CC'}}"/>
-                                    <text class="title">{{item.name}}</text>
+                                    <view class="left">
+                                        <i-icon type="other" size="24" fontWeight="bold" color="{{item.theme.type === 'color' ? item.theme.value : '#0099CC'}}"/>
+                                        <view class="title">{{item.name}}</view>
+                                    </view>
                                     <text class="number" wx:if="{{item.taskCount !== 0}}">{{item.taskCount}}</text>
                                 </view>
                             </view>
@@ -129,7 +131,7 @@
              cancel-text="取消"
     >
         <view class="new-group-input">
-            <input cursor-spacing="20" type="text" placeholder="新组名称" focus="{{newGroupInput.visible}}" value="{{newGroupInput.value}}" bindinput='newGroupInputChange' bindconfirm="createNewGroup" />
+            <input cursor-spacing="120" type="text" placeholder="新组名称" focus="{{newGroupInput.visible}}" value="{{newGroupInput.value}}" bindinput='newGroupInputChange' bindconfirm="createNewGroup" />
         </view>
     </i-modal>
 

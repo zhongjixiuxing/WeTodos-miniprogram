@@ -139,10 +139,19 @@ page {
           display: flex;
           justify-content: space-between;
           align-items: center; }
-          .container .content .bottom .list .item .item-wrap .title {
-            width: 100%;
-            padding-left: 10px;
-            font-size: 16px; }
+          .container .content .bottom .list .item .item-wrap .left {
+            display: flex;
+            flex-direction: row;
+            align-content: center;
+            align-items: center;
+            width: 93%; }
+            .container .content .bottom .list .item .item-wrap .left .title {
+              width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              padding-left: 10px;
+              font-size: 16px; }
   .container .footer {
     padding: 10px 15px 10px 10px;
     width: 100%;

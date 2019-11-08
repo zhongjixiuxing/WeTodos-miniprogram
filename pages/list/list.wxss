@@ -26,11 +26,14 @@ page {
         z-index: 1;
         font-size: 16px; }
       .container .header .wrap .name {
-        position: absolute;
         width: 100%;
+        max-width: 200px;
         text-align: center;
         font-weight: bold;
-        font-size: 16px; }
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
       .container .header .wrap .right {
         z-index: 1; }
   .container .content {
@@ -82,12 +85,16 @@ page {
           color: gray;
           font-weight: 400;
           display: flex;
-          justify-items: center; }
-          .container .content .tasks .task .main .subline .listname text {
-            transform: scale(0.8);
-            margin-left: -6px;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1; }
+          justify-items: start; }
+          .container .content .tasks .task .main .subline .listname {
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            align-content: start; }
+            .container .content .tasks .task .main .subline .listname text {
+              font-size: 12px;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 1; }
           .container .content .tasks .task .main .subline .steps {
             width: 100%;
             max-width: 60px;
@@ -321,6 +328,15 @@ page {
           border-right: 2px solid #f3f3f3; }
         .container .modal .wrap .footer .confirm {
           border-top: 2px solid #f3f3f3; }
+  .container i-modal textarea {
+    line-height: 20px;
+    height: 20px;
+    width: 80%;
+    margin: 0 auto;
+    text-align: left;
+    padding: 3px 10px;
+    background-color: #eaf6ff;
+    border-radius: 4px; }
 
 @keyframes ishow {
   from {
