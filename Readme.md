@@ -2,7 +2,7 @@
 
 [WeTodos]() 微信小程序。 一款仿照微软的TODOS 轻应用的小程序, 通常用作记事本、备忘录.
 
-<img align="center" width="250" height="250" src="https://ae01.alicdn.com/kf/Ha2cefce2dde94730ab017ceb910f5e99H.jpg">
+<img align="center" width="250" height="250" src="https://ae01.alicdn.com/kf/H041e880b398644928d26b77490bd6dfce.jpg">
 
 
 
