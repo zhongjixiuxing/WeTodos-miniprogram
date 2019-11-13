@@ -97,7 +97,6 @@ create(store,{
   onLoad: function (opts) {
     this.setData({
       userProfile: this.store.data.userProfile,
-      infos: this.store.data.infos
     });
 
     // update theme configure
@@ -133,14 +132,6 @@ create(store,{
       });
     }
     data.actions = this.data.actions;
-    const tasks = this.accordingPlanTasksByDate();
-    data.planTasks = this.data.planTasks;
-    data.planTasks[0].tasks = tasks.before.tasks;
-    data.planTasks[1].tasks = tasks.today.tasks;
-    data.planTasks[2].tasks = tasks.tomorrow.tasks;
-    data.planTasks[3].tasks = tasks.nextWeek.tasks;
-    data.planTasks[3].name = tasks.nextWeek.name;
-    data.planTasks[4].tasks = tasks.future.tasks;
 
     this.update();
     this.setData(data);
@@ -150,6 +141,20 @@ create(store,{
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    const data = {
+      infos: this.store.data.infos,
+    };
+
+    const tasks = this.accordingPlanTasksByDate();
+    data.planTasks = this.data.planTasks;
+    data.planTasks[0].tasks = tasks.before.tasks;
+    data.planTasks[1].tasks = tasks.today.tasks;
+    data.planTasks[2].tasks = tasks.tomorrow.tasks;
+    data.planTasks[3].tasks = tasks.nextWeek.tasks;
+    data.planTasks[3].name = tasks.nextWeek.name;
+    data.planTasks[4].tasks = tasks.future.tasks;
+
+    this.setData(data);
   },
 
   /**
@@ -276,7 +281,7 @@ create(store,{
   },
 
   goback: function (e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: '/pages/home/home'
     })
   },
@@ -654,7 +659,7 @@ create(store,{
     this.closeEditorPage();
   },
   goTaskPage(e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
     })
   }

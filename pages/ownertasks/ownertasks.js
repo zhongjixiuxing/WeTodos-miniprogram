@@ -54,7 +54,6 @@ create(store,{
   onLoad: function (opts) {
     this.setData({
       userProfile: this.store.data.userProfile,
-      infos: this.store.data.infos
     });
 
     const data = {};
@@ -100,7 +99,9 @@ create(store,{
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    this.setData({
+      infos: this.store.data.infos
+    });
   },
 
   /**
@@ -149,7 +150,7 @@ create(store,{
   },
 
   goback: function (e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: '/pages/home/home'
     })
   },
@@ -502,7 +503,7 @@ create(store,{
     this.setData({selectedTasks});
   },
   goTaskPage(e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
     })
   },

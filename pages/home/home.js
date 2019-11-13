@@ -219,6 +219,9 @@ create(store,{
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    this.setData({
+      infos: this.store.data.infos
+    });
   },
 
   /**
@@ -259,7 +262,7 @@ create(store,{
   goListPage: function(e) {
     const list = e.currentTarget.dataset.list;
     const url = '/pages/list/list?lid=' + list.id;
-    wx.redirectTo({
+    wx.navigateTo({
       url
     });
   },
@@ -336,7 +339,7 @@ create(store,{
       data: list
     });
 
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/list/list?lid=${list.id}&isNew=true`
     });
   },
@@ -544,7 +547,7 @@ create(store,{
   },
   redirectPage(e) {
     const page = e.currentTarget.dataset.page;
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/${page}/${page}`
     });
   },

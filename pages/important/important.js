@@ -73,7 +73,6 @@ create(store,{
     // update theme configure
     this.setData({
       userProfile: this.store.data.userProfile,
-      infos: this.store.data.infos
     });
 
     const data = {};
@@ -123,6 +122,9 @@ create(store,{
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    this.setData({
+      infos: this.store.data.infos
+    });
   },
 
   /**
@@ -165,7 +167,7 @@ create(store,{
   },
 
   goback: function (e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: '/pages/home/home'
     })
   },
@@ -551,7 +553,7 @@ create(store,{
     this.closeEditorPage();
   },
   goTaskPage(e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
     })
   }

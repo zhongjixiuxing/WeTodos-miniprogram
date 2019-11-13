@@ -29,7 +29,7 @@ create(store,{
   },
 
   goback(e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: '/pages/home/home'
     })
   },
@@ -138,7 +138,7 @@ create(store,{
   goTaskPage(e) {
     const from = encodeURIComponent(getCurrentRouteUrl(getCurrentPages(), {condition: this.data.condition}));
 
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/task/task?tid=${e.currentTarget.dataset.tid}&from=${from}`
     })
   },

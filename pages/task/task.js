@@ -33,7 +33,13 @@ create(store,{
     }
 
     if (!task){
-      throw new Error('Task ID not found: ' + opts.tid);
+      console.error('Task ID not found: ' + opts.tid);
+      const historyPages = getCurrentPages();
+      if (historyPages.length <= 2) {
+        this.navigateTo({url: '/pages/home/home'});
+      } else {
+        wx.navigateBack();
+      }
     }
 
     const expireDayString = this.getFormatDate(task.expireDay); // init expire day
@@ -55,7 +61,7 @@ create(store,{
       redirect = this.data.originUrl;
     }
 
-    wx.redirectTo({
+    wx.navigateTo({
       url: redirect
     });
   },

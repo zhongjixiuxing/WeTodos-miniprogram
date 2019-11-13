@@ -65,13 +65,32 @@ create(store,{
     todayNo: getDateNo(),
     newListInput: {
       name: '',
-    }
+    },
+    query: {}
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (opts) {
+    this.setData({
+      query: opts
+    })
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    const opts = this.data.query;
     const tasks = this.store.data.infos.tasks;
     const lists = this.store.data.infos.lists;
     const listTasks = [];
@@ -92,7 +111,13 @@ create(store,{
     }
 
     if (!list) {
-      throw new Error('List ID not found: ' + opts.lid);
+      console.error('List ID not found: ' + opts.tid);
+      const historyPages = getCurrentPages();
+      if (historyPages.length <= 2) {
+        this.navigateTo({url: '/pages/home/home'});
+      } else {
+        wx.navigateBack();
+      }
     }
 
     for (let i=0; i<lists.length; i++) {
@@ -114,7 +139,7 @@ create(store,{
     };
 
     if (opts.isNew) {
-        data.isInputNewListName = true;
+      data.isInputNewListName = true;
     }
     if (groups.length === 0) {
       const actions = this.data.actions;
@@ -138,19 +163,6 @@ create(store,{
     data.themes = this.store.data.themes;
     this.update();
     this.setData(data);
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
   },
 
   /**
@@ -193,7 +205,7 @@ create(store,{
   },
 
   goback: function (e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: '/pages/home/home'
     })
   },
@@ -481,7 +493,7 @@ create(store,{
     this.goback();
   },
   goTaskPage(e) {
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
     })
   },
