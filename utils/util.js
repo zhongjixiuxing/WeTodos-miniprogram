@@ -82,6 +82,15 @@ const getCurrentRouteUrl = (pages, opts = {}) => {
   return null;
 }
 
+const navTo = (url) => {
+  const pages = getCurrentPages();
+  if (pages.length >= 10) {
+    wx.redirectTo({url});
+  } else {
+    wx.navigateTo({url});
+  }
+}
+
 /**
  * 填充一些task默认属性
  *
@@ -136,5 +145,6 @@ module.exports = {
   uuid,
   getCurrentRouteUrl,
   fillNewTaskObj,
-  getDateNo
+  getDateNo,
+  navTo
 }

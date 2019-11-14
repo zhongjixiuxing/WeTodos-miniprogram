@@ -1,7 +1,7 @@
 import store from '../../store';
 import create from '../../plugins/westore/utils/create';
 
-const {getCurrentRouteUrl} = require('../../utils/util');
+const {getCurrentRouteUrl, navTo} = require('../../utils/util');
 
 const app = getApp()
 
@@ -29,9 +29,7 @@ create(store,{
   },
 
   goback(e) {
-    wx.navigateTo({
-      url: '/pages/home/home'
-    })
+    navTo('/pages/home/home');
   },
   conditionChange(e) {
     const condition = e.detail.value.trim();
@@ -137,10 +135,7 @@ create(store,{
 
   goTaskPage(e) {
     const from = encodeURIComponent(getCurrentRouteUrl(getCurrentPages(), {condition: this.data.condition}));
-
-    wx.navigateTo({
-      url: `/pages/task/task?tid=${e.currentTarget.dataset.tid}&from=${from}`
-    })
+    navTo(`/pages/task/task?tid=${e.currentTarget.dataset.tid}&from=${from}`);
   },
   inputFocus(e) {
     if (e.detail.hasOwnProperty('height')) {

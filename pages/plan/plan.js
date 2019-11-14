@@ -1,7 +1,7 @@
 import store from '../../store';
 import create from '../../plugins/westore/utils/create';
 
-const {getCurrentRouteUrl, fillNewTaskObj, getDateNo} = require('../../utils/util');
+const {getCurrentRouteUrl, fillNewTaskObj, getDateNo, navTo} = require('../../utils/util');
 const {REQ_ACTION} = require('../../config/properties');
 
 const app = getApp();
@@ -281,9 +281,7 @@ create(store,{
   },
 
   goback: function (e) {
-    wx.navigateTo({
-      url: '/pages/home/home'
-    })
+    navTo('/pages/home/home')
   },
 
   createTask: function (e) {
@@ -659,8 +657,6 @@ create(store,{
     this.closeEditorPage();
   },
   goTaskPage(e) {
-    wx.navigateTo({
-      url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
-    })
+    navTo(`/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`)
   }
 })

@@ -1,7 +1,7 @@
 import store from '../../store';
 import create from '../../plugins/westore/utils/create';
 const {REQ_ACTION} = require('../../config/properties');
-const {uuid} = require('../../utils/util');
+const {uuid, navTo} = require('../../utils/util');
 
 const {getCurrentRouteUrl, fillNewTaskObj, getDateNo} = require('../../utils/util');
 
@@ -150,9 +150,7 @@ create(store,{
   },
 
   goback: function (e) {
-    wx.navigateTo({
-      url: '/pages/home/home'
-    })
+    navTo('/pages/home/home');
   },
   refreshTasks() {
     const tasks = this.getOwnerlessTasks();
@@ -503,9 +501,7 @@ create(store,{
     this.setData({selectedTasks});
   },
   goTaskPage(e) {
-    wx.navigateTo({
-      url: `/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`
-    })
+    navTo(`/pages/task/task?tid=${e.currentTarget.dataset.task.id}&from=${encodeURIComponent(getCurrentRouteUrl(getCurrentPages()))}`)
   },
   moveToList(e) {
     const list = e.currentTarget.dataset.list;

@@ -1,7 +1,7 @@
 import store from '../../store';
 import create from '../../plugins/westore/utils/create';
 
-const {uuid} = require('../../utils/util');
+const {uuid, navTo} = require('../../utils/util');
 const {REQ_ACTION} = require('../../config/properties');
 
 const app = getApp();
@@ -262,9 +262,7 @@ create(store,{
   goListPage: function(e) {
     const list = e.currentTarget.dataset.list;
     const url = '/pages/list/list?lid=' + list.id;
-    wx.navigateTo({
-      url
-    });
+    navTo(url);
   },
   openNewGroupInput() {
     this.setData({
@@ -339,9 +337,7 @@ create(store,{
       data: list
     });
 
-    wx.navigateTo({
-      url: `/pages/list/list?lid=${list.id}&isNew=true`
-    });
+    navTo(`/pages/list/list?lid=${list.id}&isNew=true`);
   },
   listActionClick(e) {
     switch (e.detail.index) {
@@ -547,9 +543,7 @@ create(store,{
   },
   redirectPage(e) {
     const page = e.currentTarget.dataset.page;
-    wx.navigateTo({
-      url: `/pages/${page}/${page}`
-    });
+    navTo(`/pages/${page}/${page}`);
   },
   useOfflineMode() {
     this.setData({

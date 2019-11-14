@@ -1,7 +1,7 @@
 import create from '../../plugins/westore/utils/create';
 import store from "../../store";
 
-const {getDateNo} = require('../../utils/util');
+const {getDateNo, navTo} = require('../../utils/util');
 const {REQ_ACTION} = require('../../config/properties');
 
 //获取应用实例
@@ -36,7 +36,7 @@ create(store,{
       console.error('Task ID not found: ' + opts.tid);
       const historyPages = getCurrentPages();
       if (historyPages.length <= 2) {
-        this.navigateTo({url: '/pages/home/home'});
+        navTo('/pages/home/home')
       } else {
         wx.navigateBack();
       }
@@ -61,9 +61,7 @@ create(store,{
       redirect = this.data.originUrl;
     }
 
-    wx.navigateTo({
-      url: redirect
-    });
+    navTo(redirect);
   },
   revertState(e) {
     const tasks = this.store.data.infos.tasks;
